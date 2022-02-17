@@ -56,6 +56,7 @@
     DELAY_ONE_SEC: 
 	MOVLW	Delay1		; Load constant Delay1 into W 
 	MOVWF	0x28		; Load W to memory 0x21
-	;DOESN'T WORK YET NEEDS COMPLETING
+	
+	
 	END
 	
