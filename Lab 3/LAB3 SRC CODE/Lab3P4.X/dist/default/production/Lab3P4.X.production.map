@@ -1,0 +1,51 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Thu Feb 17 10:55:16 2022
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_1       code   0x000000    program   0x000000
+                   .org_2       code   0x000000    program   0x000038
+                   .cinit    romdata   0x000038    program   0x000002
+.config_300001_BUILD/DEFAULT/PRODUCTION/LAB3P4.    romdata   0x300001    program   0x000001
+.config_300002_BUILD/DEFAULT/PRODUCTION/LAB3P4.    romdata   0x300002    program   0x000001
+.config_300003_BUILD/DEFAULT/PRODUCTION/LAB3P4.    romdata   0x300003    program   0x000001
+.config_300006_BUILD/DEFAULT/PRODUCTION/LAB3P4.    romdata   0x300006    program   0x000001
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000039      
+                            0x300001    0x300003      
+                            0x300006    0x300006      
+            62 out of 66584 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+            DELAY_ONE_SEC   0x000034    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+                 FOR_LOOP   0x000010    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+             LOOP_1_INNER   0x000028    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+             LOOP_1_OUTER   0x000022    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+                MAIN_LOOP   0x000008    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+                    START   0x000000    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+                    START   0x000000    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    START   0x000000    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+                    START   0x000000    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+                MAIN_LOOP   0x000008    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+                 FOR_LOOP   0x000010    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+             LOOP_1_OUTER   0x000022    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+             LOOP_1_INNER   0x000028    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+            DELAY_ONE_SEC   0x000034    program     static G:\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\LAB\LAB 3\LAB 3 SRC CODE\Lab3P4.X\Lab3P4.asm
+
+
