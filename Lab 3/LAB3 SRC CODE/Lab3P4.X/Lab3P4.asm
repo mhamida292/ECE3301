@@ -38,6 +38,11 @@
 	BNZ	FOR_LOOP	; if not equal, then (0x21) not equal to 0 
 				; go back to FOR_LOOP 
 	GOTO	MAIN_LOOP	; go back to While LOOP
+
+
+    DELAY_ONE_SEC: 
+	MOVLW	Delay1		; Load constant Delay1 into W 
+	MOVWF	0x28		; Load W to memory 0x21
 	
     LOOP_1_OUTER: 
 	NOP			    ; Do nothing
@@ -53,9 +58,6 @@
 	BNZ	LOOP_1_OUTER	    ; If value not zero, go back to 
 	RETURN
 	
-    DELAY_ONE_SEC: 
-	MOVLW	Delay1		; Load constant Delay1 into W 
-	MOVWF	0x28		; Load W to memory 0x21
 	
 	
 	END
