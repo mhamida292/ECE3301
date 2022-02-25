@@ -20,7 +20,7 @@
 	MOVWF	ADCON1		; Make ADCON1 to be all digital 
 	
 	MOVLW	0x00		; Load W with 0x00 
-	MOVWF	TRISC		; Make PORT C as outputs
+	MOVWF	TRISD		; Make PORT D as outputs
 	
     MAIN_LOOP:			; start of While LOOP 
 	MOVLW	0x00		; load W with 0 
@@ -30,7 +30,7 @@
 	
     FOR_LOOP: 
 	MOVF	0x20,W		; read content of 0x20 into W 
-	MOVWF	PORTC		; output W to PORT C 
+	MOVWF	PORTD		; output W to PORT D 
 	CALL	DELAY_ONE_SEC	; wait one sec 
 	
 	INCF	0x20,F		; increment location 0x20 by 1 
@@ -38,6 +38,11 @@
 	BNZ	FOR_LOOP	; if not equal, then (0x21) not equal to 0 
 				; go back to FOR_LOOP 
 	GOTO	MAIN_LOOP	; go back to While LOOP
+
+
+    DELAY_ONE_SEC: 
+	MOVLW	Delay1		; Load constant Delay1 into W 
+	MOVWF	0x28		; Load W to memory 0x21
 	
     LOOP_1_OUTER: 
 	NOP			    ; Do nothing
@@ -53,9 +58,7 @@
 	BNZ	LOOP_1_OUTER	    ; If value not zero, go back to 
 	RETURN
 	
-    DELAY_ONE_SEC: 
-	MOVLW	Delay1		; Load constant Delay1 into W 
-	MOVWF	0x28		; Load W to memory 0x21
-	;DOESN'T WORK YET NEEDS COMPLETING
+	
+	
 	END
 	
