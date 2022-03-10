@@ -1,0 +1,42 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Thu Mar 10 06:31:14 2022
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000030
+                   .cinit    romdata   0x000030    program   0x000002
+.config_300001_BUILD/DEFAULT/PRODUCTION/LAB4P6.    romdata   0x300001    program   0x000001
+.config_300002_BUILD/DEFAULT/PRODUCTION/LAB4P6.    romdata   0x300002    program   0x000001
+.config_300003_BUILD/DEFAULT/PRODUCTION/LAB4P6.    romdata   0x300003    program   0x000001
+.config_300006_BUILD/DEFAULT/PRODUCTION/LAB4P6.    romdata   0x300006    program   0x000001
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000031      
+                            0x300001    0x300003      
+                            0x300006    0x300006      
+            54 out of 66584 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                MAIN_LOOP   0x000010    program     static C:\Users\Mohamed Hamida\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\ECE3301-L\Lab 4\LAB4 SRC CODE\Lab4P6.X\Lab4P6.asm
+                   OUTPUT   0x000028    program     static C:\Users\Mohamed Hamida\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\ECE3301-L\Lab 4\LAB4 SRC CODE\Lab4P6.X\Lab4P6.asm
+                    START   0x000000    program     static C:\Users\Mohamed Hamida\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\ECE3301-L\Lab 4\LAB4 SRC CODE\Lab4P6.X\Lab4P6.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    START   0x000000    program     static C:\Users\Mohamed Hamida\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\ECE3301-L\Lab 4\LAB4 SRC CODE\Lab4P6.X\Lab4P6.asm
+                MAIN_LOOP   0x000010    program     static C:\Users\Mohamed Hamida\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\ECE3301-L\Lab 4\LAB4 SRC CODE\Lab4P6.X\Lab4P6.asm
+                   OUTPUT   0x000028    program     static C:\Users\Mohamed Hamida\My Drive\School\CPP SPRING 2022\ECE 3301 (L) - Intro to Microcontrollers\ECE3301-L\Lab 4\LAB4 SRC CODE\Lab4P6.X\Lab4P6.asm
+
+
