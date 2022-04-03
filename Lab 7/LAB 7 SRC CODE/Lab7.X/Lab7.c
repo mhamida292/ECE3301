@@ -69,7 +69,7 @@
 #define TFT_DC          PORTCbits.RC0     		// Location of TFT D/C
 #define TFT_CS          PORTCbits.RC2    		// Location of TFT Chip Select
 #define TFT_RST         PORTCbits.RC4    		// Location of TFT Reset
-
+// DEFAULT VALUES FOR NSLT, NS, EW, EWLT PHYSICAL PROPERTIES TO SEND TO TFT DISPLAY 
 #define NS_Txt_Y        20
 #define NS_Cir_Y        NS_Txt_Y + Circle_Offset
 #define NS_Count_Y      NS_Txt_Y + Count_Offset
@@ -166,7 +166,7 @@ void main(void){
     //Initiation methods!
     Init_ADC();
     init_UART();
-    Init_Tris();
+    Init_Tris();            // INITIALIZE TRISTATE CONNECTIONS 
         
     OSCCON = 0x70; 
     RBPU = 0;    
@@ -249,7 +249,7 @@ void Wait_One_Second()							//creates one second delay and blinking asterisk
     Wait_Half_Second();                         // Wait for half second (or 500 msec)
     update_LCD_misc();
 }
-void Wait_Half_Second()
+void Wait_Half_Second()                         // WAIT HALF A SECOND 
 {
     T0CON = 0x03;                               // Timer 0, 16-bit mode, prescaler 1:16
     TMR0L = 0xDB;                               // set the lower byte of TMR
@@ -260,7 +260,7 @@ void Wait_Half_Second()
     T0CONbits.TMR0ON = 0;                       // turn off the Timer 0
 }
 
-void Wait_N_Seconds (char seconds)
+void Wait_N_Seconds (char seconds)              // WAIT N AMOUNT OF SECONDS BY CALLING THE WAIT ONE SECOND FUNCTION N TIMES
 {
     char I;
     for (I = seconds; I> 0; I--)
@@ -431,7 +431,7 @@ void Day_Mode(){    //initiate day mode sequence
     Set_NSLT(RED); 
 }
     
-void update_LCD_color (char direction, char color){
+void update_LCD_color (char direction, char color){ // UPDATE LCD COLORS 
     char Circle_Y; 
     Circle_Y = NS_Cir_Y + direction * 30; 
 
@@ -479,7 +479,7 @@ void update_LCD_color (char direction, char color){
     }
 }
 
-void Initialize_Screen()
+void Initialize_Screen()    // INITIALIZE SCREEN WITH DEFAULT VALUES 
 {
   LCD_Reset();
   TFT_GreenTab_Initialize();
@@ -565,7 +565,7 @@ void Initialize_Screen()
   drawtext(112,Switch_Txt_Y+9, SW_MODE_Txt, ST7735_WHITE, ST7735_BLACK, TS_1);
 }
 
-void update_LCD_count(char direction, char count){
+void update_LCD_count(char direction, char count){  // UPDATE LCD COUNTER 
    switch (direction)                       
    {
       case NS:       
@@ -593,7 +593,7 @@ void update_LCD_count(char direction, char count){
         break;
     }  
 }
-void update_LCD_PED_Count(char direction, char count)
+void update_LCD_PED_Count(char direction, char count)   // UPDATE PEDESTRIAN LCD COUNTER 
 {
    switch (direction)
    {
