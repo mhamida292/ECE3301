@@ -5035,14 +5035,14 @@ extern double trunc(double);
 extern double round(double);
 
 
-# 8 "Lab7.c"
+# 9 "Lab7.c"
 #pragma config OSC = INTIO67
 #pragma config WDT = OFF
 #pragma config LVP = OFF
 #pragma config BOREN = OFF
 #pragma config CCP2MX = PORTBE
 
-# 41
+# 99
 void Init_ADC();
 void init_UART();
 void Init_Tris();
@@ -5063,15 +5063,766 @@ void Wait_One_Second_With_Beep();
 void PED_Control( char Direction, char Num_Sec);
 void Day_Mode();
 void Night_Mode();
+void update_LCD_color(char direction, char color);
+void Initialize_Screen();
+void update_LCD_count(char direction, char count);
+void update_LCD_PED_Count(char direction, char count);
+void update_LCD_misc();
 
 char array[10] = {0xFF, 0x79, 0x24,0x30, 0x19, 0x12, 0x02, 0x78, 0x00, 0x10};
+char buffer[31];
+char *nbr;
+char *txt;
 
+char NS_Count[] = "00";
+char NSLT_Count[] = "00";
+char EW_Count[] = "00";
+char EWLT_Count[] = "00";
+
+char PED_NS_Count[] = "00";
+char PED_EW_Count[] = "00";
+
+char SW_NSPED_Txt[] = "0";
+char SW_NSLT_Txt[] = "0";
+char SW_EWPED_Txt[] = "0";
+char SW_EWLT_Txt[] = "0";
+
+char SW_MODE_Txt[] = "D";
+
+char Act_Mode_Txt[] = "D";
+char FlashingS_Txt[] = "0";
+char FlashingR_Txt[] = "0";
+
+char dir;
+char Count;
+char PED_Count;
+
+char SW_NSPED;
+char SW_NSLT;
+char SW_EWPED;
+char SW_EWLT;
+char SW_MODE;
+char FLASHING;
+char FLASHING_REQUEST;
+int MODE;
+char direction;
+float volt;
+
+# 3 "ST7735_TFT.c"
+void drawRoundRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned char r, unsigned int color);
+void fillRoundRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned char r, unsigned int color);
+void drawTriangle(signed int x0, signed int y0, signed int x1, signed int y1, signed int x2, signed int y2, unsigned int color);
+void fillTriangle(signed int x0, signed int y0, signed int x1, signed int y1, signed int x2, signed int y2, unsigned int color);
+void setTextWrap(BOOL w);
+void invertDisplay(BOOL i);
+void NormalDisplay();
+int Color565(int r, int g, int b);
+void spiwrite(unsigned char spidata);
+void write_command(unsigned char cmd_);
+void write_data(unsigned char data_);
+void Rcmd1();
+void Rcmd2red();
+void Rcmd2green();
+void Rcmd3();
+void setScrollDefinition(unsigned char top_fix_height, unsigned char bottom_fix_height, BOOL _scroll_direction);
+void setAddrWindow(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1);
+void drawPixel(unsigned char x, unsigned char y, unsigned int color);
+void drawFastVLine(unsigned char x, unsigned char y, unsigned char h, unsigned int color);
+void fillRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned int color);
+void drawtext(unsigned char x, unsigned char y, char *_text, unsigned int color, unsigned int bg, unsigned char size);
+void drawChar(unsigned char x, unsigned char y, unsigned char c, unsigned int color, unsigned int bg, unsigned char size);
+void fillRectangle(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned int color);
+void drawCircle(signed int x0, signed int y0, signed int r, unsigned int color);
+void drawCircleHelper(signed int x0, signed int y0, signed int r, unsigned int cornername, unsigned int color);
+void fillCircle(signed int x0, signed int y0, signed int r, unsigned int color);
+void fillCircleHelper(signed int x0, signed int y0, signed int r, unsigned int cornername, signed int delta, unsigned int color);
+void fillScreen(unsigned int color) ;
+void drawFastHLine(unsigned char x, unsigned char y, unsigned char w, unsigned int color);
+void VerticalScroll(unsigned char _vsp);
+void TFT_BlackTab_Initialize();
+void TFT_GreenTab_Initialize();
+void TFT_RedTab_Initialize(void);
+void TFT_ST7735B_Initialize(void);
+void LCD_Reset(void);
+void drawRect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int color);
+
+BOOL wrap = TRUE;
+
+# 22 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\string.h"
+extern void * memcpy(void *, const void *, size_t);
+extern void * memmove(void *, const void *, size_t);
+extern void * memset(void *, int, size_t);
+
+# 42
+extern char * strcat(char *, const char *);
+extern char * strcpy(char *, const char *);
+extern char * strncat(char *, const char *, size_t);
+extern char * strncpy(char *, const char *, size_t);
+extern char * strdup(const char *);
+extern char * strtok(char *, const char *);
+
+
+extern int memcmp(const void *, const void *, size_t);
+extern int strcmp(const char *, const char *);
+extern int stricmp(const char *, const char *);
+extern int strncmp(const char *, const char *, size_t);
+extern int strnicmp(const char *, const char *, size_t);
+extern void * memchr(const void *, int, size_t);
+extern size_t strcspn(const char *, const char *);
+extern char * strpbrk(const char *, const char *);
+extern size_t strspn(const char *, const char *);
+extern char * strstr(const char *, const char *);
+extern char * stristr(const char *, const char *);
+extern char * strerror(int);
+extern size_t strlen(const char *);
+extern char * strchr(const char *, int);
+extern char * strichr(const char *, int);
+extern char * strrchr(const char *, int);
+extern char * strrichr(const char *, int);
+
+# 43 "ST7735_TFT.c"
+unsigned char colstart = 0, rowstart = 0, _tft_type;
+
+# 97
+void delay_ms(int ms)
+{
+
+
+
+
+int count;
+count = 8000000/4000/8 * ms;
+count = (0xffff - count);
+
+T3CON = 0xb8;
+
+TMR0L = count & 0x00ff;
+TMR0H = count >> 8;
+
+PIR2bits.TMR3IF = 0;
+T3CONbits.TMR3ON = 1;
+
+while (PIR2bits.TMR3IF == 0);
+T3CONbits.TMR3ON = 0;
+}
+
+const char font[] =
+{
+0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x5F, 0x00, 0x00,
+0x00, 0x07, 0x00, 0x07, 0x00,
+0x14, 0x7F, 0x14, 0x7F, 0x14,
+0x24, 0x2A, 0x7F, 0x2A, 0x12,
+0x23, 0x13, 0x08, 0x64, 0x62,
+0x36, 0x49, 0x56, 0x20, 0x50,
+0x00, 0x08, 0x07, 0x03, 0x00,
+0x00, 0x1C, 0x22, 0x41, 0x00,
+0x00, 0x41, 0x22, 0x1C, 0x00,
+0x2A, 0x1C, 0x7F, 0x1C, 0x2A,
+0x08, 0x08, 0x3E, 0x08, 0x08,
+0x00, 0x80, 0x70, 0x30, 0x00,
+0x08, 0x08, 0x08, 0x08, 0x08,
+0x00, 0x00, 0x60, 0x60, 0x00,
+0x20, 0x10, 0x08, 0x04, 0x02,
+0x3E, 0x51, 0x49, 0x45, 0x3E,
+0x00, 0x42, 0x7F, 0x40, 0x00,
+0x72, 0x49, 0x49, 0x49, 0x46,
+0x21, 0x41, 0x49, 0x4D, 0x33,
+0x18, 0x14, 0x12, 0x7F, 0x10,
+0x27, 0x45, 0x45, 0x45, 0x39,
+0x3C, 0x4A, 0x49, 0x49, 0x31,
+0x41, 0x21, 0x11, 0x09, 0x07,
+0x36, 0x49, 0x49, 0x49, 0x36,
+0x46, 0x49, 0x49, 0x29, 0x1E,
+0x00, 0x00, 0x14, 0x00, 0x00,
+0x00, 0x40, 0x34, 0x00, 0x00,
+0x00, 0x08, 0x14, 0x22, 0x41,
+0x14, 0x14, 0x14, 0x14, 0x14,
+0x00, 0x41, 0x22, 0x14, 0x08,
+0x02, 0x01, 0x59, 0x09, 0x06,
+0x3E, 0x41, 0x5D, 0x59, 0x4E,
+0x7C, 0x12, 0x11, 0x12, 0x7C,
+0x7F, 0x49, 0x49, 0x49, 0x36,
+0x3E, 0x41, 0x41, 0x41, 0x22,
+0x7F, 0x41, 0x41, 0x41, 0x3E,
+0x7F, 0x49, 0x49, 0x49, 0x41,
+0x7F, 0x09, 0x09, 0x09, 0x01,
+0x3E, 0x41, 0x41, 0x51, 0x73,
+0x7F, 0x08, 0x08, 0x08, 0x7F,
+0x00, 0x41, 0x7F, 0x41, 0x00,
+0x20, 0x40, 0x41, 0x3F, 0x01,
+0x7F, 0x08, 0x14, 0x22, 0x41,
+0x7F, 0x40, 0x40, 0x40, 0x40,
+0x7F, 0x02, 0x1C, 0x02, 0x7F,
+0x7F, 0x04, 0x08, 0x10, 0x7F,
+0x3E, 0x41, 0x41, 0x41, 0x3E,
+0x7F, 0x09, 0x09, 0x09, 0x06,
+0x3E, 0x41, 0x51, 0x21, 0x5E,
+0x7F, 0x09, 0x19, 0x29, 0x46
+};
+
+const char font2[] =
+{
+0x26, 0x49, 0x49, 0x49, 0x32,
+0x03, 0x01, 0x7F, 0x01, 0x03,
+0x3F, 0x40, 0x40, 0x40, 0x3F,
+0x1F, 0x20, 0x40, 0x20, 0x1F,
+0x3F, 0x40, 0x38, 0x40, 0x3F,
+0x63, 0x14, 0x08, 0x14, 0x63,
+0x03, 0x04, 0x78, 0x04, 0x03,
+0x61, 0x59, 0x49, 0x4D, 0x43,
+0x00, 0x7F, 0x41, 0x41, 0x41,
+0x02, 0x04, 0x08, 0x10, 0x20,
+0x00, 0x41, 0x41, 0x41, 0x7F,
+0x04, 0x02, 0x01, 0x02, 0x04,
+0x40, 0x40, 0x40, 0x40, 0x40,
+0x00, 0x03, 0x07, 0x08, 0x00,
+0x20, 0x54, 0x54, 0x78, 0x40,
+0x7F, 0x28, 0x44, 0x44, 0x38,
+0x38, 0x44, 0x44, 0x44, 0x28,
+0x38, 0x44, 0x44, 0x28, 0x7F,
+0x38, 0x54, 0x54, 0x54, 0x18,
+0x00, 0x08, 0x7E, 0x09, 0x02,
+0x18, 0xA4, 0xA4, 0x9C, 0x78,
+0x7F, 0x08, 0x04, 0x04, 0x78,
+0x00, 0x44, 0x7D, 0x40, 0x00,
+0x20, 0x40, 0x40, 0x3D, 0x00,
+0x7F, 0x10, 0x28, 0x44, 0x00,
+0x00, 0x41, 0x7F, 0x40, 0x00,
+0x7C, 0x04, 0x78, 0x04, 0x78,
+0x7C, 0x08, 0x04, 0x04, 0x78,
+0x38, 0x44, 0x44, 0x44, 0x38,
+0xFC, 0x18, 0x24, 0x24, 0x18,
+0x18, 0x24, 0x24, 0x18, 0xFC,
+0x7C, 0x08, 0x04, 0x04, 0x08,
+0x48, 0x54, 0x54, 0x54, 0x24,
+0x04, 0x04, 0x3F, 0x44, 0x24,
+0x3C, 0x40, 0x40, 0x20, 0x7C,
+0x1C, 0x20, 0x40, 0x20, 0x1C,
+0x3C, 0x40, 0x30, 0x40, 0x3C,
+0x44, 0x28, 0x10, 0x28, 0x44,
+0x4C, 0x90, 0x90, 0x90, 0x7C,
+0x44, 0x64, 0x54, 0x4C, 0x44,
+0x00, 0x08, 0x36, 0x41, 0x00,
+0x00, 0x00, 0x77, 0x00, 0x00,
+0x00, 0x41, 0x36, 0x08, 0x00,
+0x02, 0x01, 0x02, 0x04, 0x02
+};
+
+void spiwrite(unsigned char spidata)
+{
+char x;
+PIR1bits.SSPIF = 0;
+x = SSPBUF;
+SSPBUF = spidata;
+while (!SSPSTATbits.BF);
+}
+
+void write_command(unsigned char cmd_)
+{
+PORTCbits.RC2 = 0;
+
+PORTCbits.RC0 = 0;
+spiwrite(cmd_);
+
+PORTCbits.RC2 = 1;
+
+}
+
+void write_data(unsigned char data_)
+{
+PORTCbits.RC2 = 0;
+PORTCbits.RC0 = 1;
+spiwrite(data_);
+PORTCbits.RC2 = 1;
+}
+
+void LCD_Reset(void)
+{
+PORTCbits.RC4 = 0;
+delay_ms(100);
+PORTCbits.RC4 = 1;
+}
+
+void Bcmd()
+{
+write_command(0x01);
+delay_ms(50);
+write_command(0x11);
+delay_ms(500);
+write_command(0x3A);
+write_data(0x05);
+delay_ms(10);
+write_command(0xB1);
+write_data(0x00);
+write_data(0x06);
+write_data(0x03);
+delay_ms(10);
+write_command(0x36);
+write_data(0x08);
+write_command(0xB6);
+write_data(0x15);
+write_data(0x02);
+write_command(0xB4);
+write_data(0x00);
+write_command(0xC0);
+write_data(0x02);
+write_data(0x70);
+delay_ms(10);
+write_command(0xC1);
+write_data(0x05);
+write_command(0xC2);
+write_data(0x01);
+write_data(0x02);
+write_command(0xC5);
+write_data(0x3C);
+write_data(0x38);
+delay_ms(10);
+write_command(0xFC);
+write_data(0x11);
+write_data(0x15);
+write_command(0xE0);
+write_data(0x09); write_data(0x16); write_data(0x09); write_data(0x20);
+write_data(0x21); write_data(0x1B); write_data(0x13); write_data(0x19);
+write_data(0x17); write_data(0x15); write_data(0x1E); write_data(0x2B);
+write_data(0x04); write_data(0x05); write_data(0x02); write_data(0x0E);
+write_command(0xE1);
+write_data(0x0B); write_data(0x14); write_data(0x08); write_data(0x1E);
+write_data(0x22); write_data(0x1D); write_data(0x18); write_data(0x1E);
+write_data(0x1B); write_data(0x1A); write_data(0x24); write_data(0x2B);
+write_data(0x06); write_data(0x06); write_data(0x02); write_data(0x0F);
+delay_ms(10);
+write_command(0x2A);
+write_data(0x00); write_data(0x02); write_data(0x08); write_data(0x81);
+write_command(0x2B);
+write_data(0x00); write_data(0x01); write_data(0x08); write_data(0xA0);
+write_command(0x13);
+delay_ms(10);
+write_command(0x29);
+delay_ms(500);
+}
+void Rcmd1()
+{
+write_command(0x01);
+delay_ms(150);
+write_command(0x11);
+delay_ms(500);
+write_command(0xB1);
+write_data(0x01);
+write_data(0x2C);
+write_data(0x2D);
+write_command(0xB2);
+write_data(0x01);
+write_data(0x2C);
+write_data(0x2D);
+write_command(0xB3);
+write_data(0x01);
+write_data(0x2C);
+write_data(0x2D);
+write_data(0x01);
+write_data(0x2C);
+write_data(0x2D);
+write_command(0xB4);
+write_data(0x07);
+write_command(0xC0);
+write_data(0xA2);
+write_data(0x02);
+write_data(0x84);
+write_command(0xC1);
+write_data(0xC5);
+write_command(0xC2);
+write_data(0x0A);
+write_data(0x00);
+write_command(0xC3);
+write_data(0x8A);
+write_data(0x2A);
+write_command(0xC4);
+write_data(0x8A);
+write_data(0xEE);
+write_command(0xC5);
+write_data(0x0E);
+write_command(0x20);
+write_command(0x36);
+write_data(0xC8);
+write_command(0x3A);
+write_data(0x05);
+}
+
+void Rcmd2red()
+{
+write_command(0x2A);
+write_data(0x00); write_data(0x00);
+write_data(0x00); write_data(0x7F);
+write_command(0x2B);
+write_data(0x00); write_data(0x00);
+write_data(0x00); write_data(0x9F);
+}
+
+void Rcmd3()
+{
+write_command(0xE0);
+write_data(0x02); write_data(0x1C); write_data(0x07); write_data(0x12);
+write_data(0x37); write_data(0x32); write_data(0x29); write_data(0x2D);
+write_data(0x29); write_data(0x25); write_data(0x2B); write_data(0x39);
+write_data(0x00); write_data(0x01); write_data(0x03); write_data(0x10);
+write_command(0xE1);
+write_data(0x03); write_data(0x1D); write_data(0x07); write_data(0x06);
+write_data(0x2E); write_data(0x2C); write_data(0x29); write_data(0x2D);
+write_data(0x2E); write_data(0x2E); write_data(0x37); write_data(0x3F);
+write_data(0x00); write_data(0x00); write_data(0x02); write_data(0x10);
+write_command(0x13);
+delay_ms(10);
+write_command(0x29);
+delay_ms(100);
+}
+
+void setScrollDefinition(unsigned char top_fix_height, unsigned char bottom_fix_height, BOOL _scroll_direction)
+{
+unsigned char scroll_height;
+scroll_height = 160 - top_fix_height - bottom_fix_height;
+write_command(0x33);
+write_data(0x00);
+write_data(top_fix_height);
+write_data(0x00);
+write_data(scroll_height);
+write_data(0x00);
+write_data(bottom_fix_height);
+write_command(0x36);
+if(_scroll_direction){
+if(_tft_type == 0){
+write_data(0xD8);
+}
+if(_tft_type == 1){
+write_data(0xD0);
+}
+if(_tft_type == 2){
+write_data(0x18);
+}
+}
+else{
+if(_tft_type == 0){
+write_data(0xC8);
+}
+if(_tft_type == 1){
+write_data(0xC0);
+}
+if(_tft_type == 2){
+write_data(0x08);
+}
+}
+}
+
+void setAddrWindow(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1)
+{
+write_command(0x2A);
+write_data(0);
+write_data(x0 + colstart);
+write_data(0);
+write_data(x1 + colstart);
+write_command(0x2B);
+write_data(0);
+write_data(y0 + rowstart);
+write_data(0);
+write_data(y1 + rowstart);
+write_command(0x2C);
+}
+
+void drawPixel(unsigned char x, unsigned char y, unsigned int color)
+{
+if((x >= 128) || (y >= 160))
+return;
+setAddrWindow(x,y,x+1,y+1);
+write_data(color >> 8);
+write_data(color & 0xFF);
+}
+
+void drawFastVLine(unsigned char x, unsigned char y, unsigned char h, unsigned int color)
+{
+unsigned char hi, lo;
+if((x >= 128) || (y >= 160))
+return;
+if((y + h - 1) >= 160)
+h = 160 - y;
+hi = color >> 8; lo = color;
+setAddrWindow(x, y, x, y + h - 1);
+PORTCbits.RC0 = 1;
+PORTCbits.RC2 = 0;
+
+while (h--) {
+spiwrite(hi);
+spiwrite(lo);
+}
+PORTCbits.RC2 = 1;
+
+
+}
+
+void fillRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned int color)
+{
+signed int i;
+
+for (i = x; i < x + w; i++)
+{
+drawFastVLine(i, y, h, color);
+}
+}
+
+void drawChar(unsigned char x, unsigned char y, unsigned char c, unsigned int color, unsigned int bg, unsigned char size)
+{
+char i, j;
+if((x >= 128) || (y >= 160))
+return;
+if(size < 1) size = 1;
+if((c < ' ') || (c > '~'))
+c = '?';
+for(i=0; i<5; i++ ) {
+unsigned char line;
+if(c < 'S')
+line = font[(c - 32)*5 + i];
+else
+line = font2[(c - 'S')*5 + i];
+for(j=0; j<7; j++, line >>= 1) {
+if(line & 0x01) {
+if(size == 1) drawPixel(x+i, y+j, color);
+else fillRect(x+(i*size), y+(j*size), size, size, color);
+}
+else if(bg != color) {
+if(size == 1) drawPixel(x+i, y+j, bg);
+else fillRect(x+i*size, y+j*size, size, size, bg);
+}
+}
+}
+}
+
+void drawtext(unsigned char x, unsigned char y, char *_text, unsigned int color, unsigned int bg, unsigned char size)
+{
+unsigned char cursor_x, cursor_y;
+unsigned int textsize, i;
+cursor_x = x, cursor_y = y;
+textsize = strlen(_text);
+for(i = 0; i < textsize; i++){
+if(wrap && ((cursor_x + size * 5) > 128)){
+cursor_x = 0;
+cursor_y = cursor_y + size * 7 + 3 ;
+if(cursor_y > 160) cursor_y = 160;
+if(_text[i] == 0x20) goto _skip; }
+drawChar(cursor_x, cursor_y, _text[i], color, bg, size);
+cursor_x = cursor_x + size * 6;
+if(cursor_x > 128) cursor_x = 128;
+_skip:;}
+}
+
+void Rcmd2green()
+{
+write_command(0x2A);
+write_data(0x00); write_data(0x02);
+write_data(0x00); write_data(0x7F + 0x02);
+write_command(0x2B);
+write_data(0x00); write_data(0x01);
+write_data(0x00); write_data(0x9F + 0x01);
+}
+
+
+void fillRectangle(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned int color)
+{
+unsigned char hi, lo;
+if((x >= 128) || (y >= 160))
+return;
+if((x + w - 1) >= 128)
+w = 128 - x;
+if((y + h - 1) >= 160)
+h = 160 - y;
+setAddrWindow(x, y, x+w-1, y+h-1);
+hi = color >> 8; lo = color;
+PORTCbits.RC0 = 1;
+PORTCbits.RC2 = 0;
+
+for(y=h; y>0; y--) {
+for(x = w; x > 0; x--) {
+spiwrite(hi);
+spiwrite(lo);
+}
+}
+PORTCbits.RC2 = 1;
+
+
+}
+
+void drawCircle(signed int x0, signed int y0, signed int r, unsigned int color)
+{
+signed int f, ddF_x, ddF_y, x, y;
+f = 1 - r, ddF_x = 1, ddF_y = -2 * r, x = 0, y = r;
+drawPixel(x0 , y0 + r, color);
+drawPixel(x0 , y0 - r, color);
+drawPixel(x0+r, y0 , color);
+drawPixel(x0-r, y0 , color);
+while (x < y) {
+if (f >= 0) {
+y--;
+ddF_y += 2;
+f += ddF_y;
+}
+x++;
+ddF_x += 2;
+f += ddF_x;
+drawPixel(x0 + x, y0 + y, color);
+drawPixel(x0 - x, y0 + y, color);
+drawPixel(x0 + x, y0 - y, color);
+drawPixel(x0 - x, y0 - y, color);
+drawPixel(x0 + y, y0 + x, color);
+drawPixel(x0 - y, y0 + x, color);
+drawPixel(x0 + y, y0 - x, color);
+drawPixel(x0 - y, y0 - x, color);
+}
+}
+
+void drawCircleHelper(signed int x0, signed int y0, signed int r, unsigned int cornername, unsigned int color)
+{
+signed int f, ddF_x, ddF_y, x, y;
+f = 1 - r, ddF_x = 1, ddF_y = -2 * r, x = 0, y = r;
+while (x<y) {
+if (f >= 0) {
+y--;
+ddF_y += 2;
+f += ddF_y;
+}
+x++;
+ddF_x += 2;
+f += ddF_x;
+if (cornername & 0x4) {
+drawPixel(x0 + x, y0 + y, color);
+drawPixel(x0 + y, y0 + x, color);
+}
+if (cornername & 0x2) {
+drawPixel(x0 + x, y0 - y, color);
+drawPixel(x0 + y, y0 - x, color);
+}
+if (cornername & 0x8) {
+drawPixel(x0 - y, y0 + x, color);
+drawPixel(x0 - x, y0 + y, color);
+}
+if (cornername & 0x1) {
+drawPixel(x0 - y, y0 - x, color);
+drawPixel(x0 - x, y0 - y, color);
+}
+}
+}
+
+
+void fillCircleHelper(signed int x0, signed int y0, signed int r, unsigned int cornername, signed int delta, unsigned int color)
+{
+signed int f, ddF_x, ddF_y, x, y;
+f = 1 - r, ddF_x = 1, ddF_y = -2 * r, x = 0, y = r;
+while (x<y) {
+if (f >= 0) {
+y--;
+ddF_y += 2;
+f += ddF_y;
+}
+x++;
+ddF_x += 2;
+f += ddF_x;
+
+if (cornername & 0x1) {
+drawFastVLine(x0+x, y0-y, 2*y+1+delta, color);
+drawFastVLine(x0+y, y0-x, 2*x+1+delta, color);
+}
+if (cornername & 0x2) {
+drawFastVLine(x0-x, y0-y, 2*y+1+delta, color);
+drawFastVLine(x0-y, y0-x, 2*x+1+delta, color);
+}
+}
+}
+
+void fillCircle(signed int x0, signed int y0, signed int r, unsigned int color)
+{
+drawFastVLine(x0, y0 - r, 2 * r + 1, color);
+fillCircleHelper(x0, y0, r, 3, 0, color);
+}
+void fillScreen(unsigned int color)
+{
+fillRectangle(0, 0, 128, 160, color);
+}
+
+void drawFastHLine(unsigned char x, unsigned char y, unsigned char w, unsigned int color)
+{
+unsigned char hi, lo;
+if((x >= 128) || (y >= 160))
+return;
+if((x + w - 1) >= 128)
+w = 128 - x;
+hi = color >> 8; lo = color;
+setAddrWindow(x, y, x + w - 1, y);
+PORTCbits.RC0 = 1;
+PORTCbits.RC2 = 0;
+
+while (w--) {
+spiwrite(hi);
+spiwrite(lo);
+}
+PORTCbits.RC2 = 1;
+
+}
+
+void TFT_GreenTab_Initialize()
+{
+PORTCbits.RC2 = 1;
+PORTCbits.RC0 = 0;
+
+SSPSTAT=0x80;
+SSPCON1=0x30;
+
+
+Rcmd1();
+Rcmd2red();
+Rcmd3();
+write_command(0x36);
+write_data(0xC0);
+_tft_type = 1;
+}
+
+void TFT_BlackTab_Initialize()
+{
+PORTCbits.RC2 = 1;
+PORTCbits.RC0 = 0;
+
+SSPSTAT=0x80;
+SSPCON1=0x30;
+
+Rcmd1();
+Rcmd2green();
+Rcmd3();
+colstart = 2;
+rowstart = 1;
+_tft_type = 0;
+}
+
+void VerticalScroll(unsigned char _vsp)
+{
+write_command(0x37);
+write_data(0x00);
+write_data(_vsp);
+}
+
+
+void drawRect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int color)
+{
+drawFastHLine(x, y, w, color);
+drawFastHLine(x, y + h - 1, w, color);
+drawFastVLine(x, y, h, color);
+drawFastVLine(x + w - 1, y, h, color);
+}
+
+# 165 "Lab7.c"
 void main(void){
+
 Init_ADC();
 init_UART();
 Init_Tris();
 
-
+OSCCON = 0x70;
+RBPU = 0;
+Initialize_Screen();
 while (1){
 Select_ADC_Channel(0);
 int num_step = get_full_ADC();
@@ -5079,19 +5830,19 @@ float pvoltage_mv = num_step*4.0;
 float Pvoltage = pvoltage_mv;
 int finalVoltage = (int)Pvoltage;
 
-if(finalVoltage < 3000){
+if(finalVoltage < 2250){
 PORTBbits.RB7 = 1;
 Day_Mode();
 }else{
 PORTBbits.RB7 = 0;
 Night_Mode();
-
-}
-
-# 109
 }
 }
-
+}
+void putch (char c){
+while (!TRMT);
+TXREG = c;
+}
 void init_UART(void){
 OpenUSART(0b01111111 & 0b10111111 & 0b11111110 & 0b11111101
 & 0b11111111 & 0b11111111, 25);
@@ -5137,14 +5888,22 @@ PORTEbits.RE1 = 1;
 void Display_Lower_Digit(char digit){
 PORTD = (PORTD & 0x80) | array[digit];
 }
-void Wait_One_Second() {
-PORTDbits.RD7 = 0;
-Wait_Half_Second();
+void Wait_One_Second()
+{
 PORTDbits.RD7 = 1;
+strcpy(txt,"*");
+drawtext(120,10,txt,0xFFFF,0x0000,1);
 Wait_Half_Second();
+
+PORTDbits.RD7 = 0;
+strcpy(txt," ");
+drawtext(120,10,txt,0xFFFF,0x0000,1);
+Wait_Half_Second();
+update_LCD_misc();
 }
-void Wait_Half_Second() {
-T0CON = 0x02;
+void Wait_Half_Second()
+{
+T0CON = 0x03;
 TMR0L = 0xDB;
 TMR0H = 0x0B;
 INTCONbits.TMR0IF = 0;
@@ -5153,14 +5912,22 @@ while (INTCONbits.TMR0IF == 0);
 T0CONbits.TMR0ON = 0;
 }
 
-void Wait_N_Seconds (char seconds) {
+void Wait_N_Seconds (char seconds)
+{
 char I;
-for (I = 0; I< seconds; I++) {
+for (I = seconds; I> 0; I--)
+{
+update_LCD_count(direction, I);
 Wait_One_Second();
+
 }
+update_LCD_count(direction, 0);
 }
 
+
 void Set_NS(char color){
+direction = 0;
+update_LCD_color(direction, color);
 switch(color){
 case 0: PORTAbits.RA5=0; PORTBbits.RB0=0; break;
 case 1: PORTAbits.RA5=1; PORTBbits.RB0=0; break;
@@ -5169,6 +5936,8 @@ case 3: PORTAbits.RA5=1; PORTBbits.RB0=1; break;
 }
 }
 void Set_NSLT(char color){
+direction = 1;
+update_LCD_color(direction, color);
 switch(color){
 case 0: PORTBbits.RB1=0; PORTBbits.RB2=0; break;
 case 1: PORTBbits.RB1=1; PORTBbits.RB2=0; break;
@@ -5177,6 +5946,8 @@ case 3: PORTBbits.RB1=1; PORTBbits.RB2=1; break;
 }
 }
 void Set_EW(char color){
+direction = 2;
+update_LCD_color(direction, color);
 switch(color){
 case 0: PORTBbits.RB4=0; PORTBbits.RB5=0; break;
 case 1: PORTBbits.RB4=1; PORTBbits.RB5=0; break;
@@ -5185,6 +5956,8 @@ case 3: PORTBbits.RB4=1; PORTBbits.RB5=1; break;
 }
 }
 void Set_EWLT(char color){
+direction = 3;
+update_LCD_color(direction, color);
 switch(color){
 case 0: PORTEbits.RE0=0; PORTEbits.RE2=0; break;
 case 1: PORTEbits.RE0=1; PORTEbits.RE2=0; break;
@@ -5202,37 +5975,35 @@ void Deactivate_Buzzer() {
 CCP2CON = 0x0;
 PORTBbits.RB3 = 0;
 }
-void Wait_One_Second_With_Beep() {
+void Wait_One_Second_With_Beep()
+{
 PORTDbits.RD7 = 1;
+strcpy(txt,"*");
+drawtext(120,10,txt,0xFFFF,0x0000,1);
 Activate_Buzzer();
 Wait_Half_Second();
+
 PORTDbits.RD7 = 0;
+strcpy(txt," ");
+drawtext(120,10,txt,0xFFFF,0x0000,1);
 Deactivate_Buzzer();
 Wait_Half_Second();
+update_LCD_misc();
 }
 void PED_Control( char Direction, char Num_Sec){
-
-Display_Lower_Digit(0x00);
-Display_Upper_Digit(0x00);
-
-for(char i = Num_Sec - 1; i >0; i--){
-switch(Direction){
-case 0:
-Display_Upper_Digit(i);
-break;
-case 1:
-Display_Lower_Digit(i);
-break;
-}
+for(char i = Num_Sec - 1; i >0 ; i--){
+update_LCD_PED_Count(Direction, i);
 Wait_One_Second_With_Beep();
 }
-Display_Lower_Digit(0x00);
-Display_Upper_Digit(0x00);
-
+update_LCD_PED_Count(direction, 0);
+update_LCD_PED_Count(1, 0);
 Wait_One_Second_With_Beep();
 }
 
 void Night_Mode(){
+MODE = 0;
+PORTBbits.RB7 = 0;
+Act_Mode_Txt[0] = 'N';
 Set_NSLT(1);
 Set_EW(1);
 Set_EWLT(1);
@@ -5264,7 +6035,11 @@ Set_NSLT(1);
 Set_NSLT(1);
 }
 }
+
 void Day_Mode(){
+MODE = 1;
+PORTBbits.RB7 = 1;
+Act_Mode_Txt[0] = 'D';
 Set_NSLT(1);
 Set_EW(1);
 Set_EWLT(1);
@@ -5308,3 +6083,206 @@ Wait_N_Seconds(3);
 Set_NSLT(1);
 }
 
+void update_LCD_color (char direction, char color){
+char Circle_Y;
+Circle_Y = 20 + 15 + direction * 30;
+
+if (color == 0){
+
+fillCircle(40, Circle_Y, 7, 0x0000);
+fillCircle(60, Circle_Y, 7, 0x0000);
+fillCircle(80, Circle_Y, 7, 0x0000);
+
+drawCircle(40, Circle_Y, 7, 0xF800);
+drawCircle(60, Circle_Y, 7, 0xFFE0);
+drawCircle(80, Circle_Y, 7, 0x07E0);
+}
+
+if(color == 1){
+
+fillCircle(40, Circle_Y, 7, 0xF800);
+fillCircle(60, Circle_Y, 7, 0x0000);
+fillCircle(80, Circle_Y, 7, 0x0000);
+
+drawCircle(40, Circle_Y, 7, 0xF800);
+drawCircle(60, Circle_Y, 7, 0xFFE0);
+drawCircle(80, Circle_Y, 7, 0x07E0);
+}
+
+if(color == 3){
+
+fillCircle(40, Circle_Y, 7, 0x0000);
+fillCircle(60, Circle_Y, 7, 0xFFE0);
+fillCircle(80, Circle_Y, 7, 0x0000);
+
+drawCircle(40, Circle_Y, 7, 0xF800);
+drawCircle(60, Circle_Y, 7, 0xFFE0);
+drawCircle(80, Circle_Y, 7, 0x07E0);
+}
+if(color == 2){
+
+fillCircle(40, Circle_Y, 7, 0x0000);
+fillCircle(60, Circle_Y, 7, 0x0000);
+fillCircle(80, Circle_Y, 7, 0x07E0);
+
+drawCircle(40, Circle_Y, 7, 0xF800);
+drawCircle(60, Circle_Y, 7, 0xFFE0);
+drawCircle(80, Circle_Y, 7, 0x07E0);
+}
+}
+
+void Initialize_Screen()
+{
+LCD_Reset();
+TFT_GreenTab_Initialize();
+fillScreen(0x0000);
+
+
+txt = buffer;
+strcpy(txt, "ECE3301L SPRING 22-S3");
+drawtext(2, 2, txt, 0xFFFF, 0x0000, 1);
+
+
+strcpy(txt, "Mode:");
+drawtext(2, 10, txt, 0xFFFF, 0x0000, 1);
+drawtext(35,10, Act_Mode_Txt, 0xFFFF, 0x0000, 1);
+
+
+strcpy(txt, "FR:");
+drawtext(50, 10, txt, 0xFFFF, 0x0000, 1);
+drawtext(70, 10, FlashingR_Txt, 0xFFFF, 0x0000, 1);
+
+
+strcpy(txt, "FS:");
+drawtext(80, 10, txt, 0xFFFF, 0x0000, 1);
+drawtext(100, 10, FlashingR_Txt, 0xFFFF, 0x0000, 1);
+
+
+strcpy(txt, "*");
+drawtext(120, 10, txt, 0xFFFF, 0x0000, 1);
+
+
+strcpy(txt, "NORTH/SOUTH");
+drawtext (30, 20 , txt, 0x001F, 0x0000, 1);
+drawRect (30, 20 + 15-8, 60, 18, 0x001F);
+drawCircle(40, 20 + 15 , 7, 0xF800);
+drawCircle(60, 20 + 15 , 7, 0xFFE0);
+fillCircle(80, 20 + 15 , 7, 0x07E0);
+drawtext (100, 20 + 10, NS_Count, 0x001F, 0x0000, 2);
+
+
+strcpy(txt, "N/S LT");
+drawtext (30, 50, txt, 0xF81F, 0x0000, 1);
+drawRect (30, 50 + 15-8, 60, 18, 0xF81F);
+fillCircle(40, 50 + 15, 7, 0xF800);
+drawCircle(60, 50 + 15, 7, 0xFFE0);
+drawCircle(80, 50 + 15, 7, 0x07E0);
+drawtext (100, 50 + 10, NSLT_Count, 0xF81F, 0x0000, 2);
+
+
+strcpy(txt, "EAST/WEST");
+drawtext (30, 80, txt, 0x07FF, 0x0000, 1);
+drawRect (30, 80 + 15-8, 60, 18, 0x07FF);
+fillCircle(40, 80 + 15, 7, 0xF800);
+drawCircle(60, 80 + 15, 7, 0xFFE0);
+drawCircle(80, 80 + 15, 7, 0x07E0);
+drawtext (100, 80 + 10, EW_Count, 0x07FF, 0x0000, 2);
+
+
+strcpy(txt, "E/W LT");
+drawtext (30, 110, txt, 0xFFFF, 0x0000, 1);
+drawRect (30, 110 + 15-8, 60, 18, 0xFFFF);
+fillCircle(40, 110 + 15, 7, 0xF800);
+drawCircle(60, 110 + 15, 7, 0xFFE0);
+drawCircle(80, 110 + 15, 7, 0x07E0);
+drawtext (100, 110 + 10, EWLT_Count, 0xFFFF, 0x0000, 2);
+
+
+strcpy(txt, "PNS");
+drawtext(3, 20, txt, 0x001F, 0x0000, 1);
+drawtext(2, 30, PED_NS_Count, 0x001F, 0x0000, 2);
+
+
+drawtext(2, 90, PED_EW_Count, 0x07FF, 0x0000, 2);
+strcpy(txt, "PEW");
+drawtext(3, 80, txt, 0x07FF, 0x0000, 1);
+
+
+strcpy(txt, "NSP NSLT EWP EWLT MR");
+drawtext(1, 140, txt, 0xFFFF, 0x0000, 1);
+drawtext(6, 140+9, SW_NSPED_Txt, 0xFFFF, 0x0000, 1);
+drawtext(32, 140+9, SW_NSLT_Txt, 0xFFFF, 0x0000, 1);
+drawtext(58, 140+9, SW_EWPED_Txt, 0xFFFF, 0x0000, 1);
+drawtext(87, 140+9, SW_EWLT_Txt, 0xFFFF, 0x0000, 1);
+drawtext(112,140+9, SW_MODE_Txt, 0xFFFF, 0x0000, 1);
+}
+
+void update_LCD_count(char direction, char count){
+switch (direction)
+{
+case 0:
+NS_Count[0] = count/10 + '0';
+NS_Count[1] = count%10 + '0';
+drawtext(100, 20 + 10, NS_Count, 0x001F, 0x0000, 2);
+break;
+
+case 1:
+NSLT_Count[0] = count/10 + '0';
+NSLT_Count[1] = count%10 + '0';
+drawtext(100, 50 + 10, NSLT_Count, 0xF81F, 0x0000, 2);
+break;
+
+case 2:
+EW_Count[0] = count/10 + '0';
+EW_Count[1] = count%10 + '0';
+drawtext(100, 80 + 10, EW_Count, 0x07FF, 0x0000, 2);
+break;
+
+case 3:
+EWLT_Count[0] = count/10 + '0';
+EWLT_Count[1] = count%10 + '0';
+drawtext(100, 110 + 10, EWLT_Count, 0xFFFF, 0x0000, 2);
+break;
+}
+}
+void update_LCD_PED_Count(char direction, char count)
+{
+switch (direction)
+{
+case 1:
+PED_EW_Count[0] = count/10 + '0';
+PED_EW_Count[1] = count%10 + '0';
+drawtext(2, 90, PED_EW_Count, 0x07FF, 0x0000, 2);
+break;
+case 0:
+PED_NS_Count[0] = count/10 + '0';
+PED_NS_Count[1] = count%10 + '0';
+drawtext(2, 30, PED_NS_Count, 0x001F, 0x0000, 2);
+break;
+}
+}
+
+void update_LCD_misc()
+{
+int nStep = get_full_ADC();
+volt = nStep * 5 /1024.0;
+SW_MODE = volt < 2.25 ? 1:0;
+printf("Voltage = %f \r\n", volt);
+SW_EWPED = PORTAbits.RA3;
+SW_EWLT = PORTAbits.RA4;
+SW_NSPED = PORTAbits.RA1;
+SW_NSLT = PORTAbits.RA2;
+
+if (SW_MODE == 0) SW_MODE_Txt[0]= 'N'; else SW_MODE_Txt[0] = 'D';
+if (SW_EWPED == 0) SW_EWPED_Txt[0] = '0'; else SW_EWPED_Txt[0] = '1';
+if (SW_EWLT == 0) SW_EWLT_Txt[0] = '0'; else SW_EWLT_Txt[0] = '1';
+if (SW_NSPED == 0) SW_NSPED_Txt[0] = '0'; else SW_NSPED_Txt[0] = '1';
+if (SW_NSLT == 0) SW_NSLT_Txt[0] = '0'; else SW_NSLT_Txt[0] = '1';
+
+drawtext(35,10, Act_Mode_Txt, 0xFFFF, 0x0000, 1);
+drawtext(6, 140+9, SW_EWPED_Txt, 0xFFFF, 0x0000, 1);
+drawtext(32, 140+9, SW_EWLT_Txt, 0xFFFF, 0x0000, 1);
+drawtext(58, 140+9, SW_NSPED_Txt, 0xFFFF, 0x0000, 1);
+drawtext(87, 140+9, SW_NSLT_Txt, 0xFFFF, 0x0000, 1);
+drawtext(112, 140+9, SW_MODE_Txt, 0xFFFF, 0x0000, 1);
+}

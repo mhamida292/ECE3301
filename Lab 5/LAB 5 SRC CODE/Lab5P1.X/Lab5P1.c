@@ -3,16 +3,19 @@
 #include <xc.h>
 #include <math.h>
 #include <usart.h>
-#include <p18f4620.h>
+#include <p18f4620.h> // INITIATING ALL HEADER FILES ASSOCIATED WITH PIC, STANDARD LIBRARY, UART COMMUNICATION
 
-#pragma config OSC = INTIO67
-#pragma config WDT = OFF
-#pragma config LVP = OFF
-#pragma config BOREN = OFF
+#pragma config OSC = INTIO67    // SET OSCILLATOR TO INTERNAL
+#pragma config WDT = OFF        // SET WATCHDOG TIMER TO OFF  
+#pragma config LVP = OFF        // SET LOW VOLTAGE PROGRAMMING TO OFF
+#pragma config BOREN = OFF      //SET BROWN OUT RESET TO OFF
 
-#define delay 5 
+#define delay 5                     //DEFINE CONSTANT DELAY = 5
+        
 
-#define D1_RED      PORTBbits.RB0
+
+// DEFINE ALL COLORS TO SPECIFIC BITS DEPENDING ON LED 
+#define D1_RED      PORTBbits.RB0        
 #define D1_GREEN    PORTBbits.RB1
 #define D1_BLUE     PORTBbits.RB2
 
@@ -24,29 +27,28 @@
 #define D3_GREEN    PORTAbits.RA5
 
 
-char array[10] = {0x40, 0x79, 0x24,0x30, 0x19, 0x12, 0x02, 0x78, 0x00, 0x10}; 
+char array[10] = {0x40, 0x79, 0x24,0x30, 0x19, 0x12, 0x02, 0x78, 0x00, 0x10}; // DEFINE ALL 7SEGMENT COMBINATIONS 
 
 
-void Init_ADC();    
-void init_UART();
-void Init_Tris(); 
-void WAIT_1_SEC(); // 
-unsigned int get_full_ADC(void); //
-void Display_Lower_Digit(char digit);   //
-void Display_Upper_Digit(char digit);   //
-void Select_ADC_Channel(char channel);  //
-void Display_D1(int temperature);  //
-void Display_D2(int temperature);  //
-void Display_D3(int voltage);  //
+void Init_ADC();                        // INITIATE ANALOG TO DIGITAL CONVERTER 
+void init_UART();                       // INITIATE UART COMMUNCATION 
+void Init_Tris();                       // INITIATE ALL TRISTATE INPUTS AND OUTPUTS 
+void WAIT_1_SEC();                      // WAIT ONE SECOND 
+unsigned int get_full_ADC(void);        // GET FULL VOLTAGE DATA FROM ANALOG TO DIGITAL 
+void Display_Lower_Digit(char digit);   // DISPLAY UPPER DIGIT 7SEG DISPLAY
+void Display_Upper_Digit(char digit);   // DISPLAY LOWER DIGIT 7SEG DISPLAY
+void Select_ADC_Channel(char channel);  // SELECT APPROPRIATE CHANNEL TO GET ADC DATA 
+void Display_D1(int temperature);       // DISPLAY D1 COLOR TO LED DEPENDING ON TEMPERATURE 
+void Display_D2(int temperature);       // DISPLAY D2 COLOR TO LED DEPENDING ON TEMPERATURE 
+void Display_D3(int voltage);           // DISPLAY D3 DEPENDING ON LIGHT RESISTOR VALUE 
 
 
-//
+//SET EACH COLOR COMBINATION FOR SPECIFIC LED. 
 void D1_None(void);
 void D1_Red(void);
 void D1_Green(void);
 void D1_Blue(void);
 void D1_White(void);
-//
 void D2_None(void);
 void D2_Red(void);
 void D2_Green(void);
@@ -57,68 +59,63 @@ void D2_Cyan(void);
 void D2_White(void);
 
 void main(void){
-    Init_ADC();
-    init_UART();
-    Init_Tris();
+    Init_ADC();  // CALL ADC CONVERTER INITIATION 
+    init_UART(); // CALL UART INITIATION 
+    Init_Tris(); // CALL TRISTATE INITIATION 
     
     
-    PORTC = 0xFF; 
-    PORTD = 0xFF; 
-    PORTB = 0x00; 
+    PORTC = 0xFF; // SET PORT TO INPUT 
+    PORTD = 0xFF; // SET PORT TO INPUT 
+    PORTB = 0x00; // SET PORT TO OUTPUT 
     
-    while(1){
-        Select_ADC_Channel(0); 
-        int num_step = get_full_ADC();
+    while(1){   // INFINITE LOOP 
+        Select_ADC_Channel(0); //SELECT APPROPRIATE ADC CHANNEL FOR TEMPERATURE SENSOR 
+        int num_step = get_full_ADC();  // GET NUMSTEP FROM ADC CHANNEL 
         float voltage_mv = num_step*4.0;
-        float temp_c = (1035.0 - voltage_mv)/5.50;
-        float temp_f = (1.80 * temp_c) + 32.0;
-        int intTmpF = (int)temp_f;
-        char upper = intTmpF /10;
-        char lower = intTmpF %10;
-        Display_Upper_Digit(upper);
-        Display_Lower_Digit(lower);
+        float temp_c = (1035.0 - voltage_mv)/5.50;  // CALIBRATE CELSIUS DATA 
+        float temp_f = (1.80 * temp_c) + 32.0;      // CONVERT TO F
+        int intTmpF = (int)temp_f;                  // PARSE AS INT  
+        char upper = intTmpF /10;                   // PARSE UPPER DIGIT 
+        char lower = intTmpF %10;                   // PARSE LOWER DIGIT
+        Display_Upper_Digit(upper);                 // DISPLAY UPPER DIGIT 
+        Display_Lower_Digit(lower);                 // DISPLAY LOWER DIGIT
         
-        Display_D1(intTmpF);
-        Display_D2(intTmpF);
+        Display_D1(intTmpF);                        // SEND TEMP DATA TO DISPLAY LED D1
+        Display_D2(intTmpF);                        // SEND TEMP DATA TO DISPALY LED D2
         
-        Select_ADC_Channel(2);
-        int num_step = get_full_ADC();
+        Select_ADC_Channel(2);                      // CHANGE ADC CHANNEL TO PHOTORESISTOR 
+        int num_step = get_full_ADC();              // GET LIGHT RESISTOR DATA FROM ADC
         float pvoltage_mv = num_step*4.0;
-        float Pvoltage = pvoltage_mv; 
-        int intVoltage = (int) Pvoltage; 
-        Display_D3(intVoltage); 
-        printf("Steps = %d \r\n", num_step);
+        float Pvoltage = pvoltage_mv;               // SET NEW VOLTAGE 
+        int intVoltage = (int) Pvoltage;            // PARSE AS INT 
+        Display_D3(intVoltage);                     // DISPLAY ON D3 LED DEPENDING ON VOLTAGE
+        //DISPLAY ALL DATA
+        printf("Steps = %d \r\n", num_step);        
         printf("Voltage = %f \r\n", pvoltage_mv);
         printf("Temperature = %f/ F \r\n\n", temp_f);
         printf ("Light Volt = %f mV \r\n\n", intVoltage);
-        WAIT_1_SEC();
+        WAIT_1_SEC(); //WAIT ONE SECOND 
     }
-   
-//    for(int i=0 ; i< 10; i++){
-//        Display_Lower_Digit(i); 
-//        Display_Upper_Digit(i);
-//        WAIT_1_SEC();
-//    }
 }
 
 
-void init_UART(void){
+void init_UART(void){ // INIT UART CONNECTION 
     OpenUSART(USART_TX_INT_OFF & USART_RX_INT_OFF & USART_ASYNCH_MODE & USART_EIGHT_BIT 
             & USART_CONT_RX & USART_BRGH_HIGH, 25);
     OSCCON = 0x60;
 }
-void Select_ADC_Channel(char channel)
+void Select_ADC_Channel(char channel) // CONNECT APPROPRIATE ADC CHANNEL 
 {
     ADCON0 = channel * 4 + 1;
 }
-void Init_Tris(){
+void Init_Tris(){ // INITIATE TRISTATE CONNECTIONS 
     TRISA = 0x0F; 
     TRISB = 0x00; 
     TRISC = 0x00; 
     TRISD = 0x00; 
     TRISE = 0x00; 
 }
-void Init_ADC(void){
+void Init_ADC(void){    // INITIAILIZE ANALOG TO DIGITAL CONVERSION 
     //ADCON0=0x01;
     // select channel AN0, and turn on the ADC subsystem
     ADCON1=0x1B;
@@ -128,7 +125,7 @@ void Init_ADC(void){
     // right justify the result. Set the bit conversion time (TAD) and
     // acquisition time
 }
-unsigned int get_full_ADC(void){
+unsigned int get_full_ADC(void){    // GET DATA FROM ADC CHANNEL 
     int result; 
     ADCON0bits.GO=1;
     // Start Conversion
@@ -145,27 +142,23 @@ void putch (char c){
     TXREG = c;
 }
 
-void WAIT_1_SEC(){
+void WAIT_1_SEC(){ // WAIT ONE SECOND 
     for(int j = 0; j<17000; j++); 
 }
-void Display_Upper_Digit(char digit){
+void Display_Upper_Digit(char digit){ // DISPLAY UPPER DIGIT TO 7SEG
     PORTC = array[digit] & 0x3F;
     if((array[digit] & 0x40) == 0x00)
         PORTE = 0;
     else
         PORTE = 1;
-//    PORTC = array[digit] & 0x3F;
-//    char  pinRC6 = array[digit] & 0x40;
-//    if ( pinRC6 == 0)PORTE = 0x00;
-//    else PORTE = 0x01;
 }
 
-void Display_Lower_Digit(char digit){
+void Display_Lower_Digit(char digit){// DISPLAY LOWER DIGIT TO 7SEG
     PORTD = array[digit]; 
     //PORTD = 0x00; 
 }
 
-void Display_D1(int temperature){
+void Display_D1(int temperature){ // CHECK TEMP AND DISPLAY COLOR TO D1 LED 
     if(temperature <= 45) D1_None();
     else if(temperature >= 46 && temperature<= 55) D1_Red(); 
     else if(temperature >= 56 && temperature<= 65) D1_Green(); 
@@ -173,7 +166,7 @@ void Display_D1(int temperature){
     else if(temperature >= 76) D1_White();
 }
 
-void Display_D2(int temperature){
+void Display_D2(int temperature){// CHECK TEMP AND DISPLAY COLOR TO D2 LED 
     if(temperature <= 10) D2_None();
     else if(temperature >= 10 && temperature<= 19) D2_Red(); 
     else if(temperature >= 20 && temperature<= 29) D2_Green(); 
@@ -184,7 +177,7 @@ void Display_D2(int temperature){
     else if(temperature >= 70 ) D2_White();
 }
 
-void Display_D3(int voltage){
+void Display_D3(int voltage){// CHECK VOLTAGE FROM PHOTORESISTOR AND DISPLAY COLOR TO D3 LED 
     if(voltage < 2500)
         PORTA = 0x01<<4;
     else if (voltage >=2500 && voltage < 3400)
@@ -192,7 +185,7 @@ void Display_D3(int voltage){
     else
         PORTA = 0x03<<4;
 }
-
+// COLOR COMBINATIONS FOR LEDS D1 - D2
 void D1_None(void)
 {
     D1_RED = 0;
