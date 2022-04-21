@@ -18,9 +18,11 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>Lab5P1.c</itemPath>
-    <itemPath>test.asm</itemPath>
+    <itemPath>Lab10.c</itemPath>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -37,6 +39,7 @@
       <compileType>
         <linkerTool>
           <linkerLibItems>
+            <linkerLibFileItem>ST7735_TFT.c</linkerLibFileItem>
           </linkerLibItems>
         </linkerTool>
         <archiverTool>

@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=Lab5P1.c
+SOURCEFILES_QUOTED_IF_SPACED=Lab5P1.c test.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Lab5P1.p1
-POSSIBLE_DEPFILES=${OBJECTDIR}/Lab5P1.p1.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Lab5P1.p1 ${OBJECTDIR}/test.obj
+POSSIBLE_DEPFILES=${OBJECTDIR}/Lab5P1.p1.d ${OBJECTDIR}/test.obj.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/Lab5P1.p1
+OBJECTFILES=${OBJECTDIR}/Lab5P1.p1 ${OBJECTDIR}/test.obj
 
 # Source Files
-SOURCEFILES=Lab5P1.c
+SOURCEFILES=Lab5P1.c test.asm
 
 
 CFLAGS=
@@ -115,7 +115,23 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/test.obj: test.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/test.obj.d 
+	@${RM} ${OBJECTDIR}/test.obj 
+	${MP_CC} -C $(MP_EXTRA_AS_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  -D__DEBUG=1  --debugger=none  --double=24 --float=24 --emi=wordwrite --opt=+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 --warn=-3 --asmlist -DXPRJ_default=$(CND_CONF)  --summary=default,-psect,-class,+mem,-hex,-file --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%f:%l: error: (%n) %s" "--warnformat=%f:%l: warning: (%n) %s" "--msgformat=%f:%l: advisory: (%n) %s"   -o${OBJECTDIR}/test.obj  test.asm 
+	@-${MV} ${OBJECTDIR}/test.d ${OBJECTDIR}/test.obj.d 
+	@${FIXDEPS} ${OBJECTDIR}/test.obj.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
 else
+${OBJECTDIR}/test.obj: test.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/test.obj.d 
+	@${RM} ${OBJECTDIR}/test.obj 
+	${MP_CC} -C $(MP_EXTRA_AS_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  --double=24 --float=24 --emi=wordwrite --opt=+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 --warn=-3 --asmlist -DXPRJ_default=$(CND_CONF)  --summary=default,-psect,-class,+mem,-hex,-file --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%f:%l: error: (%n) %s" "--warnformat=%f:%l: warning: (%n) %s" "--msgformat=%f:%l: advisory: (%n) %s"   -o${OBJECTDIR}/test.obj  test.asm 
+	@-${MV} ${OBJECTDIR}/test.d ${OBJECTDIR}/test.obj.d 
+	@${FIXDEPS} ${OBJECTDIR}/test.obj.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
 endif
 
 # ------------------------------------------------------------------------------------

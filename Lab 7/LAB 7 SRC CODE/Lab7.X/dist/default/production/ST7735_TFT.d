@@ -1,1 +1,0 @@
- dist/default/production/ST7735_TFT.d  dist/default/production/ST7735_TFT.p1:  ST7735_TFT.c
