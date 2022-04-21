@@ -1,148 +1,13 @@
 
-# 1 "lab11.c"
+# 1 "I2C_Soft.c"
 
-# 8 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stdio.h"
-typedef int ptrdiff_t;
-typedef unsigned size_t;
-typedef unsigned short wchar_t;
-
-# 7 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stdarg.h"
-typedef void * va_list[1];
-
-#pragma intrinsic(__va_start)
-extern void * __va_start(void);
-
-#pragma intrinsic(__va_arg)
-extern void * __va_arg(void *, ...);
-
-# 24 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stdio.h"
-extern int errno;
-
-# 55
-struct __prbuf
-{
-char * ptr;
-void (* func)(char);
-};
-
-# 17 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\conio.h"
-extern int errno;
-
-
-extern void init_uart(void);
-
-extern char getch(void);
-extern char getche(void);
-extern void putch(char);
-extern void ungetch(char);
-
-extern __bit kbhit(void);
-
-# 31
-extern char * cgets(char *);
-extern void cputs(const char *);
-
-# 100 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stdio.h"
-extern int cprintf(char *, ...);
-#pragma printf_check(cprintf)
-
-
-
-extern int _doprnt(struct __prbuf *, const register char *, register va_list);
-
-
-# 192
-#pragma printf_check(vprintf) const
-#pragma printf_check(vsprintf) const
-
-extern char * gets(char *);
-extern int puts(const char *);
-extern int scanf(const char *, ...) __attribute__((unsupported("scanf() is not supported by this compiler")));
-extern int sscanf(const char *, const char *, ...) __attribute__((unsupported("sscanf() is not supported by this compiler")));
-extern int vprintf(const char *, va_list) __attribute__((unsupported("vprintf() is not supported by this compiler")));
-extern int vsprintf(char *, const char *, va_list) __attribute__((unsupported("vsprintf() is not supported by this compiler")));
-extern int vscanf(const char *, va_list ap) __attribute__((unsupported("vscanf() is not supported by this compiler")));
-extern int vsscanf(const char *, const char *, va_list) __attribute__((unsupported("vsscanf() is not supported by this compiler")));
-
-#pragma printf_check(printf) const
-#pragma printf_check(sprintf) const
-extern int sprintf(char *, const char *, ...);
-extern int printf(const char *, ...);
-
-# 27 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stdlib.h"
-typedef struct {
-int rem;
-int quot;
-} div_t;
-typedef struct {
-unsigned rem;
-unsigned quot;
-} udiv_t;
-typedef struct {
-long quot;
-long rem;
-} ldiv_t;
-typedef struct {
-unsigned long quot;
-unsigned long rem;
-} uldiv_t;
-
-# 65
-extern double atof(const char *);
-extern double strtod(const char *, const char **);
-extern int atoi(const char *);
-extern unsigned xtoi(const char *);
-extern long atol(const char *);
-extern long strtol(const char *, char **, int);
-
-extern int rand(void);
-extern void srand(unsigned int);
-extern void * calloc(size_t, size_t);
-extern div_t div(int numer, int denom);
-extern udiv_t udiv(unsigned numer, unsigned denom);
-extern ldiv_t ldiv(long numer, long denom);
-extern uldiv_t uldiv(unsigned long numer,unsigned long denom);
-extern unsigned long _lrotl(unsigned long value, unsigned int shift);
-extern unsigned long _lrotr(unsigned long value, unsigned int shift);
-extern unsigned int _rotl(unsigned int value, unsigned int shift);
-extern unsigned int _rotr(unsigned int value, unsigned int shift);
-
-
-
-
-extern void * malloc(size_t);
-extern void free(void *);
-extern void * realloc(void *, size_t);
+# 26 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\htc.h"
+extern const char __xc8_OPTIM_SPEED;
 
 
 # 13 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\xc8debug.h"
 #pragma intrinsic(__builtin_software_breakpoint)
 extern void __builtin_software_breakpoint(void);
-
-# 98 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stdlib.h"
-extern int atexit(void (*)(void));
-extern char * getenv(const char *);
-extern char ** environ;
-extern int system(char *);
-extern void qsort(void *, size_t, size_t, int (*)(const void *, const void *));
-extern void * bsearch(const void *, void *, size_t, size_t, int(*)(const void *, const void *));
-extern int abs(int);
-extern long labs(long);
-
-
-extern char * itoa(char * buf, int val, int base);
-extern char * utoa(char * buf, unsigned val, int base);
-
-
-
-
-extern char * ltoa(char * buf, long val, int base);
-extern char * ultoa(char * buf, unsigned long val, int base);
-
-extern char * ftoa(float f, int * status);
-
-# 26 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\htc.h"
-extern const char __xc8_OPTIM_SPEED;
 
 # 49 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\pic18f4620.h"
 extern volatile unsigned char PORTA @ 0xF80;
@@ -4283,7 +4148,12 @@ void Busy_eep ( void );
 unsigned char Read_b_eep( unsigned int badd );
 void Write_b_eep( unsigned int badd, unsigned char bdat );
 
-# 13 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stddef.h"
+# 2 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\stddef.h"
+typedef int ptrdiff_t;
+typedef unsigned size_t;
+typedef unsigned short wchar_t;
+
+# 13
 extern int errno;
 
 # 65 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\GenericTypeDefs.h"
@@ -5006,66 +4876,6 @@ extern __nonreentrant void _delaywdt(unsigned long);
 #pragma intrinsic(_delay3)
 extern __nonreentrant void _delay3(unsigned char);
 
-# 30 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\math.h"
-extern double fabs(double);
-extern double floor(double);
-extern double ceil(double);
-extern double modf(double, double *);
-extern double sqrt(double);
-extern double atof(const char *);
-extern double sin(double) ;
-extern double cos(double) ;
-extern double tan(double) ;
-extern double asin(double) ;
-extern double acos(double) ;
-extern double atan(double);
-extern double atan2(double, double) ;
-extern double log(double);
-extern double log10(double);
-extern double pow(double, double) ;
-extern double exp(double) ;
-extern double sinh(double) ;
-extern double cosh(double) ;
-extern double tanh(double);
-extern double eval_poly(double, const double *, int);
-extern double frexp(double, int *);
-extern double ldexp(double, int);
-extern double fmod(double, double);
-extern double trunc(double);
-extern double round(double);
-
-# 22 "C:\Program Files (x86)\Microchip\xc8\v1.34\include\string.h"
-extern void * memcpy(void *, const void *, size_t);
-extern void * memmove(void *, const void *, size_t);
-extern void * memset(void *, int, size_t);
-
-# 42
-extern char * strcat(char *, const char *);
-extern char * strcpy(char *, const char *);
-extern char * strncat(char *, const char *, size_t);
-extern char * strncpy(char *, const char *, size_t);
-extern char * strdup(const char *);
-extern char * strtok(char *, const char *);
-
-
-extern int memcmp(const void *, const void *, size_t);
-extern int strcmp(const char *, const char *);
-extern int stricmp(const char *, const char *);
-extern int strncmp(const char *, const char *, size_t);
-extern int strnicmp(const char *, const char *, size_t);
-extern void * memchr(const void *, int, size_t);
-extern size_t strcspn(const char *, const char *);
-extern char * strpbrk(const char *, const char *);
-extern size_t strspn(const char *, const char *);
-extern char * strstr(const char *, const char *);
-extern char * stristr(const char *, const char *);
-extern char * strerror(int);
-extern size_t strlen(const char *);
-extern char * strchr(const char *, int);
-extern char * strichr(const char *, int);
-extern char * strrchr(const char *, int);
-extern char * strrichr(const char *, int);
-
 # 1 "I2C_Soft.h"
 void I2C_Init(const unsigned long c);
 void I2C_Wait(void);
@@ -5086,241 +4896,163 @@ void i2cLowScl(void);
 void i2cNack(void);
 void i2cAck(void);
 
-# 1 "I2C_Support.h"
-void DS1621_Init(void);
-void DS3231_Read_Time(void);
-void DS3231_Setup_Time(void);
-int DS1621_Read_Temp(void);
-
-# 1 "Interrupt.h"
-void init_INTERRUPT();
-void interrupt high_priority chkisr(void) ;
-void INT0_isr(void);
-void TIMER1_isr(void);
-void force_nec_state0();
-
-# 61 "ST7735.h"
-void drawRoundRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned char r, unsigned int color);
-void fillRoundRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned char r, unsigned int color);
-void drawTriangle(signed int x0, signed int y0, signed int x1, signed int y1, signed int x2, signed int y2, unsigned int color);
-void fillTriangle(signed int x0, signed int y0, signed int x1, signed int y1, signed int x2, signed int y2, unsigned int color);
-void setTextWrap(BOOL w);
-void invertDisplay(BOOL i);
-void NormalDisplay();
-int Color565(int r, int g, int b);
-void spiwrite(unsigned char spidata);
-void write_command(unsigned char cmd_);
-void write_data(unsigned char data_);
-void Rcmd1();
-void Rcmd2red();
-void Rcmd2green();
-void Rcmd3();
-void setScrollDefinition(unsigned char top_fix_height, unsigned char bottom_fix_height, BOOL _scroll_direction);
-void setAddrWindow(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1);
-void drawPixel(unsigned char x, unsigned char y, unsigned int color);
-void drawFastVLine(unsigned char x, unsigned char y, unsigned char h, unsigned int color);
-void fillRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned int color);
-void drawtext(unsigned char x, unsigned char y, char *_text, unsigned int color, unsigned int bg, unsigned char size);
-void drawChar(unsigned char x, unsigned char y, unsigned char c, unsigned int color, unsigned int bg, unsigned char size);
-void fillRectangle(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned int color);
-void drawCircle(signed int x0, signed int y0, signed int r, unsigned int color);
-void drawCircleHelper(signed int x0, signed int y0, signed int r, unsigned int cornername, unsigned int color);
-void fillCircle(signed int x0, signed int y0, signed int r, unsigned int color);
-void fillCircleHelper(signed int x0, signed int y0, signed int r, unsigned int cornername, signed int delta, unsigned int color);
-void fillScreen(unsigned int color) ;
-void drawFastHLine(unsigned char x, unsigned char y, unsigned char w, unsigned int color);
-void VerticalScroll(unsigned char _vsp);
-void TFT_BlackTab_Initialize();
-void TFT_GreenTab_Initialize();
-void TFT_RedTab_Initialize(void);
-void TFT_ST7735B_Initialize(void);
-void LCD_Reset(void);
-void drawRect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int color);
-
-# 46 "lab11.c"
-unsigned char Nec_state = 0;
-unsigned char i,bit_count;
-short nec_ok = 0;
-unsigned long long Nec_code;
-unsigned int Time_Elapsed;
-
-extern char Nec_code1;
-
-char tempSecond = 0xff;
-char second = 0x00;
-char minute = 0x00;
-char hour = 0x00;
-char dow = 0x00;
-char day = 0x00;
-char month = 0x00;
-char year = 0x00;
-char setup_second, setup_minute, setup_hour, setup_day, setup_month, setup_year;
-char alarm_second, alarm_minute, alarm_hour, alarm_date;
-char setup_alarm_second, setup_alarm_minute, setup_alarm_hour;
-
-char array1[21]={0xa2};
-char txt1[21][4] ={"CH-\0"};
-int color[21]={0xF800};
-
-# 78
-char D1[21] = {0x02, 0x02, 0x02, 0x08, 0x08, 0x04, 0x0A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-char D2[21] = {0, 0, 0, 0, 0, 0,0, 0x28, 0x28, 0x38, 0x38, 0x38, 0x38, 0x38, 0, 0, 0, 0, 0, 0, 0};
-char D3[21] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07};
-
-char TempSecond;
-
-char buffer[31];
-char *nbr;
-char *txt;
-
-char Nec_code1;
-char nec_code;
-char found;
-
-void putch(char c);
-void init_UART();
-void Do_Init();
-void Deactivate_Buzzer();
-void Activate_Buzzer();
-void Initialize_Screen();
-void Wait_One_Sec();
-void Wait_Half_Second();
-void main()
+# 14 "I2C_Soft.c"
+void I2C_Init(unsigned long c)
 {
-Do_Init();
-
-DS3231_Setup_Time();
-while (1)
-{
-char tempC = DS1621_Read_Temp();
-char tempF = (tempC * 9 / 5) + 32;
-printf(" Temperature = %d degreesC = %d degreesF\r\n", tempC, tempF);
-char previousSecond = second;
-DS3231_Read_Time();
-if(second != previousSecond){
-printf("%02x:%02x:%02x %02x/%02x/%02x",hour,minute,second,month,day,year);
-tempC = DS1621_Read_Temp();
-tempF = (tempC * 9 / 5) + 32;
-printf (" Temperature = %d degreesC = %d degreesF\r\n", tempC, tempF);
-}
-if(nec_ok == 1)
-{
-nec_ok = 0;
-Nec_code1 = (char)((Nec_code >> 8));
-INTCONbits.INT0IE = 1;
-INTCON2bits.INTEDG0 = 0;
-
-found = 0xff;
-
-
-
-for(int i = 0;i < 21;i++)
-{
-if(array1[i] == Nec_code1)
-{
-found = i;
-break;
-}
+i2cHighScl();
+i2cHighSda();
 }
 
-printf ("NEC_Code = %08lx %x ", Nec_code, Nec_code1);
-printf ("Found = %d\r\n", found);
-if (found != 0xff)
+unsigned char I2C_Read(char ack)
 {
-PORTA = D1[found];
-PORTD = D2[found];
-PORTE = D3[found];
-
-fillCircle(60, 80, 20, color[found]);
-drawCircle(60, 80, 20, 0xFFFF);
-drawtext(52, 77, txt1[found], 0xFFFF, 0x0000,1);
-
-PORTBbits.RB7 = 1;
-
-Activate_Buzzer();
-Wait_Half_Second();
-PORTBbits.RB7 = 0;
-
-Deactivate_Buzzer();
-}
-}
-}
-
-# 181
-}
-
-void Do_Init()
+unsigned char inByte, n;
+i2cHighSda();
+for (n=0; n<8; n++)
 {
-init_UART();
+i2cHighScl();
 
-OSCCON=0x70;
-DS1621_Init();
-
-ADCON1= 0x0F;
-TRISA = 0x00;
-TRISB = 0x11;
-TRISC = 0x00;
-TRISD = 0x40;
-TRISE = 0x00;
-RBPU=0;
-I2C_Init(100000);
-
+if (PORTDbits.RD6)
+inByte = (inByte << 1) | 0x01;
+else
+inByte = inByte << 1;
+i2cLowScl();
 }
-void putch (char c)
-{
-while (!TRMT);
-TXREG = c;
+if (ack) i2cAck();
+else i2cNack();
+
+
+return(inByte);
 }
 
-void init_UART()
+void I2C_Write(unsigned char outByte )
 {
-OpenUSART (0b01111111 & 0b10111111 & 0b11111110 & 0b11111101 & 0b11111111 & 0b11111111, 25);
-OSCCON = 0x70;
+unsigned char n;
+for(n=0; n<8; n++)
+{
+if(outByte&0x80) i2cHighSda();
+else i2cLowSda();
+i2cHighScl();
+i2cLowScl();
+outByte = outByte << 1;
+}
+i2cHighSda();
+i2cHighScl();
+i2cLowScl();
 }
 
-
-void Wait_One_Sec()
+void i2cNack(void)
 {
-Wait_Half_Second();
-Wait_Half_Second();
+i2cHighScl();
+i2cLowScl();
 }
 
-void Activate_Buzzer()
+void i2cAck(void)
 {
-PR2 = 0b11111001;
-T2CON = 0b00000101;
-CCPR2L = 0b01001010;
-CCP2CON = 0b00111100;
+i2cLowSda();
+i2cHighScl();
+i2cLowScl();
+i2cHighSda();
 }
 
-void Deactivate_Buzzer()
+void I2C_Start(void)
 {
-CCP2CON = 0x0;
-PORTBbits.RB3 = 0;
+i2cHighSda();
+i2cHighScl();
+i2cLowSda();
+i2cLowScl();
 }
 
-void Wait_Half_Second()
+void I2C_ReStart(void)
 {
-T0CON = 0x03;
-TMR0L = 0xDB;
-TMR0H = 0x0B;
-INTCONbits.TMR0IF = 0;
-T0CONbits.TMR0ON = 1;
-while (INTCONbits.TMR0IF == 0);
-T0CONbits.TMR0ON = 0;
+i2cLowScl();
+i2cHighSda();
+i2cHighScl();
+i2cLowSda();
+i2cLowScl();
 }
 
-void Initialize_Screen()
+void I2C_Stop(void)
 {
-LCD_Reset();
-TFT_GreenTab_Initialize();
-fillScreen(0x0000);
+i2cLowScl();
+i2cLowSda();
+i2cHighScl();
+i2cHighSda();
+}
 
+void i2cHighSda(void)
+{
+TRISDbits.RD6 = 1;
+_delay((unsigned long)((2)*(8000000/4000000.0)));
+}
 
-txt = buffer;
-strcpy(txt, "ECE3301L Spring 22-S3");
-drawtext(2, 2, txt, 0xFFFF, 0x0000, 1);
+void i2cLowSda(void)
+{
+PORTDbits.RD6 = 0;
+TRISDbits.RD6 = 0;
+_delay((unsigned long)((2)*(8000000/4000000.0)));
+}
 
-strcpy(txt, "LAB 11 ");
-drawtext(50, 10, txt, 0xFFFF, 0x0000, 1);
+void i2cHighScl(void)
+{
+TRISBbits.RB4 = 1;
+_delay((unsigned long)((10)*(8000000/4000000.0)));
+}
+
+void i2cLowScl(void)
+{
+PORTBbits.RB4 = 0;
+TRISBbits.RB4 = 0;
+_delay((unsigned long)((1)*(8000000/4000000.0)));
+}
+
+char I2C_Write_Address_Read_One_Byte(char Device, char Address)
+{
+char Data_Ret;
+I2C_Start();
+I2C_Write((Device << 1) | 0);
+I2C_Write(Address);
+I2C_ReStart();
+I2C_Write((Device << 1) | 1);
+Data_Ret = I2C_Read(0);
+I2C_Stop();
+return Data_Ret;
+}
+
+void I2C_Write_Address_Write_One_Byte(char Device, char Address, char Data_Out)
+{
+I2C_Start();
+I2C_Write((Device << 1) | 0);
+I2C_Write(Address);
+I2C_Write(Data_Out);
+I2C_Stop();
+}
+
+void I2C_Write_Cmd_Only(char Device, char Cmd)
+{
+I2C_Start();
+I2C_Write((Device << 1) | 0);
+I2C_Write(Cmd);
+I2C_Stop();
+}
+
+void I2C_Write_Cmd_Write_Data(char Device, char Cmd, char Data_Out)
+{
+I2C_Start();
+I2C_Write((Device << 1) | 0);
+I2C_Write(Cmd);
+I2C_Write(Data_Out);
+I2C_Stop();
+}
+
+char I2C_Write_Cmd_Read_One_Byte(char Device, char Cmd)
+{
+char Data_Ret;
+I2C_Start();
+I2C_Write((Device << 1) | 0);
+I2C_Write(Cmd);
+I2C_ReStart();
+I2C_Write((Device << 1) | 1);
+Data_Ret = I2C_Read(0);
+I2C_Stop();
+return Data_Ret;
 }

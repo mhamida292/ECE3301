@@ -121,15 +121,15 @@ void i2cLowScl(void)
 
 char I2C_Write_Address_Read_One_Byte(char Device, char Address)
 {
-char Data_Ret;    
-  I2C_Start();                      // Start I2C protocol
-  I2C_Write((Device << 1) | 0);     // DS3231 address Write mode
-  I2C_Write(Address);               // Send register address
-  I2C_ReStart();                    // Restart I2C
-  I2C_Write((Device << 1) | 1);     // Initialize data read
-  Data_Ret = I2C_Read(NAK);         //
-  I2C_Stop(); 
-  return Data_Ret;
+   char Data_Ret;    
+   I2C_Start();                      // Start I2C protocol
+   I2C_Write((Device << 1) | 0);     // DS3231 address Write mode
+   I2C_Write(Address);               // Send register address
+   I2C_ReStart();                    // Restart I2C
+   I2C_Write((Device << 1) | 1);     // Initialize data read
+   Data_Ret = I2C_Read(NAK);         //
+   I2C_Stop(); 
+   return Data_Ret;
 }
 
 void I2C_Write_Address_Write_One_Byte(char Device, char Address, char Data_Out)

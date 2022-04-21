@@ -43,11 +43,44 @@ int DS1621_Read_Temp()
 
 void DS3231_Read_Time()
 {
-          
+    char Device = 0x68; 
+    char Address = 0x00;    
+    char Data_Ret;    
+    I2C_Start();                      // Start I2C protocol
+    I2C_Write((Device << 1) | 0);     // DS3231 address Write mode
+    I2C_Write(Address);               // Send register address
+    I2C_ReStart();                    // Restart I2C
+    I2C_Write((Device << 1) | 1);     // Initialize data read
+    second = I2C_Read(ACK); 
+    minute = I2C_Read(ACK); 
+    hour = I2C_Read(ACK); 
+    dow = I2C_Read(ACK); 
+    day = I2C_Read(ACK); 
+    month = I2C_Read(ACK); 
+    year = I2C_Read(NAK);
+    I2C_Stop();   
 }
 
 void DS3231_Setup_Time()
 {
-
+    char Device = 0x68; 
+    char Address = 0x00; 
+    second = 0x00; 
+    hour = 0x00; 
+    dow = 0x00; 
+    day = 0x00; 
+    month = 0x00; 
+    year = 0x00; 
+    
+    I2C_Start();                      // Start I2C protocol
+    I2C_Write((Device << 1) | 0);     // Device address Write mode
+    I2C_Write(Address);               // Send register address
+    I2C_Write(second); 
+    I2C_Write(hour);
+    I2C_Write(dow);  
+    I2C_Write(day);
+    I2C_Write(month); 
+    I2C_Write(year);  
+    I2C_Stop(); 
 }
 
