@@ -3832,12 +3832,12 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :UE 395 ]
 }
 "34
-[v _INT0_ISR `(v ~T0 @X0 1 ef ]
+[v _INT0_isr `(v ~T0 @X0 1 ef ]
 "35
 {
-[; ;Interrupt.c: 34: void INT0_ISR()
+[; ;Interrupt.c: 34: void INT0_isr()
 [; ;Interrupt.c: 35: {
-[e :U _INT0_ISR ]
+[e :U _INT0_isr ]
 [f ]
 [; ;Interrupt.c: 36: INTCONbits.INT0IF = 0;
 "36

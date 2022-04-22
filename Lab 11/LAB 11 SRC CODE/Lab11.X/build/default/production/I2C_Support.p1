@@ -13,7 +13,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _I2C_Read `(uc ~T0 @X0 0 ef1`uc ]
 "5
 [v _I2C_Stop `(v ~T0 @X0 0 ef ]
-"15 I2C_Support.c
+"16 I2C_Support.c
 [v _second `uc ~T0 @X0 0 e ]
 [v _minute `uc ~T0 @X0 0 e ]
 [v _hour `uc ~T0 @X0 0 e ]
@@ -3729,207 +3729,207 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;I2C_Soft.h: 16: void i2cLowScl(void);
 [; ;I2C_Soft.h: 17: void i2cNack(void);
 [; ;I2C_Soft.h: 18: void i2cAck(void);
-[; ;I2C_Support.c: 15: extern unsigned char second, minute, hour, dow, day, month, year;
-[; ;I2C_Support.c: 16: extern unsigned char setup_second, setup_minute, setup_hour, setup_day, setup_month, setup_year;
-[; ;I2C_Support.c: 17: extern unsigned char alarm_second, alarm_minute, alarm_hour, alarm_date;
-[; ;I2C_Support.c: 18: extern unsigned char setup_alarm_second, setup_alarm_minute, setup_alarm_hour;
-"21 I2C_Support.c
+[; ;I2C_Support.c: 16: extern unsigned char second, minute, hour, dow, day, month, year;
+[; ;I2C_Support.c: 17: extern unsigned char setup_second, setup_minute, setup_hour, setup_day, setup_month, setup_year;
+[; ;I2C_Support.c: 18: extern unsigned char alarm_second, alarm_minute, alarm_hour, alarm_date;
+[; ;I2C_Support.c: 19: extern unsigned char setup_alarm_second, setup_alarm_minute, setup_alarm_hour;
+"22 I2C_Support.c
 [v _DS1621_Init `(v ~T0 @X0 1 ef ]
-"22
+"23
 {
-[; ;I2C_Support.c: 21: void DS1621_Init()
-[; ;I2C_Support.c: 22: {
+[; ;I2C_Support.c: 22: void DS1621_Init()
+[; ;I2C_Support.c: 23: {
 [e :U _DS1621_Init ]
 [f ]
-"23
-[v _Device `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 23: char Device = 0x48;
-[e = _Device -> -> 72 `i `uc ]
-[; ;I2C_Support.c: 24: I2C_Write_Cmd_Write_Data (Device, 0xAC, 0x02);
 "24
-[e ( _I2C_Write_Cmd_Write_Data (3 , , _Device -> -> 172 `i `uc -> -> 2 `i `uc ]
-[; ;I2C_Support.c: 25: I2C_Write_Cmd_Only(Device, 0xEE);
+[v _Device `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 24: char Device = 0x48;
+[e = _Device -> -> 72 `i `uc ]
+[; ;I2C_Support.c: 25: I2C_Write_Cmd_Write_Data (Device, 0xAC, 0x02);
 "25
-[e ( _I2C_Write_Cmd_Only (2 , _Device -> -> 238 `i `uc ]
-[; ;I2C_Support.c: 26: }
+[e ( _I2C_Write_Cmd_Write_Data (3 , , _Device -> -> 172 `i `uc -> -> 2 `i `uc ]
+[; ;I2C_Support.c: 26: I2C_Write_Cmd_Only(Device, 0xEE);
 "26
+[e ( _I2C_Write_Cmd_Only (2 , _Device -> -> 238 `i `uc ]
+[; ;I2C_Support.c: 27: }
+"27
 [e :UE 392 ]
 }
-"29
-[v _DS1621_Read_Temp `(i ~T0 @X0 1 ef ]
 "30
+[v _DS1621_Read_Temp `(i ~T0 @X0 1 ef ]
+"31
 {
-[; ;I2C_Support.c: 29: int DS1621_Read_Temp()
-[; ;I2C_Support.c: 30: {
+[; ;I2C_Support.c: 30: int DS1621_Read_Temp()
+[; ;I2C_Support.c: 31: {
 [e :U _DS1621_Read_Temp ]
 [f ]
-"31
-[v _Device `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 31: char Device = 0x48;
-[e = _Device -> -> 72 `i `uc ]
 "32
-[v _Cmd `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 32: char Cmd = 0xAA;
-[e = _Cmd -> -> 170 `i `uc ]
+[v _Device `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 32: char Device = 0x48;
+[e = _Device -> -> 72 `i `uc ]
 "33
-[v _Data_Ret `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 33: char Data_Ret;
-[; ;I2C_Support.c: 34: I2C_Start();
+[v _Cmd `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 33: char Cmd = 0xAA;
+[e = _Cmd -> -> 170 `i `uc ]
 "34
-[e ( _I2C_Start ..  ]
-[; ;I2C_Support.c: 35: I2C_Write((Device << 1) | 0);
+[v _Data_Ret `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 34: char Data_Ret;
+[; ;I2C_Support.c: 35: I2C_Start();
 "35
-[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 0 `i `uc ]
-[; ;I2C_Support.c: 36: I2C_Write(Cmd);
+[e ( _I2C_Start ..  ]
+[; ;I2C_Support.c: 36: I2C_Write((Device << 1) | 0);
 "36
-[e ( _I2C_Write (1 _Cmd ]
-[; ;I2C_Support.c: 37: I2C_ReStart();
+[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 0 `i `uc ]
+[; ;I2C_Support.c: 37: I2C_Write(Cmd);
 "37
-[e ( _I2C_ReStart ..  ]
-[; ;I2C_Support.c: 38: I2C_Write((Device << 1) | 1);
+[e ( _I2C_Write (1 _Cmd ]
+[; ;I2C_Support.c: 38: I2C_ReStart();
 "38
-[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 1 `i `uc ]
-[; ;I2C_Support.c: 39: Data_Ret = I2C_Read(0);
+[e ( _I2C_ReStart ..  ]
+[; ;I2C_Support.c: 39: I2C_Write((Device << 1) | 1);
 "39
-[e = _Data_Ret ( _I2C_Read (1 -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 40: I2C_Stop();
+[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 1 `i `uc ]
+[; ;I2C_Support.c: 40: Data_Ret = I2C_Read(0);
 "40
-[e ( _I2C_Stop ..  ]
-[; ;I2C_Support.c: 41: return Data_Ret;
+[e = _Data_Ret ( _I2C_Read (1 -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 41: I2C_Stop();
 "41
+[e ( _I2C_Stop ..  ]
+[; ;I2C_Support.c: 42: return Data_Ret;
+"42
 [e ) -> _Data_Ret `i ]
 [e $UE 393  ]
-[; ;I2C_Support.c: 42: }
-"42
+[; ;I2C_Support.c: 43: }
+"43
 [e :UE 393 ]
 }
-"44
-[v _DS3231_Read_Time `(v ~T0 @X0 1 ef ]
 "45
+[v _DS3231_Read_Time `(v ~T0 @X0 1 ef ]
+"46
 {
-[; ;I2C_Support.c: 44: void DS3231_Read_Time()
-[; ;I2C_Support.c: 45: {
+[; ;I2C_Support.c: 45: void DS3231_Read_Time()
+[; ;I2C_Support.c: 46: {
 [e :U _DS3231_Read_Time ]
 [f ]
-"46
-[v _Device `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 46: char Device = 0x68;
-[e = _Device -> -> 104 `i `uc ]
 "47
-[v _Address `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 47: char Address = 0x00;
-[e = _Address -> -> 0 `i `uc ]
+[v _Device `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 47: char Device = 0x68;
+[e = _Device -> -> 104 `i `uc ]
 "48
-[v _Data_Ret `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 48: char Data_Ret;
-[; ;I2C_Support.c: 49: I2C_Start();
+[v _Address `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 48: char Address = 0x00;
+[e = _Address -> -> 0 `i `uc ]
 "49
-[e ( _I2C_Start ..  ]
-[; ;I2C_Support.c: 50: I2C_Write((Device << 1) | 0);
+[v _Data_Ret `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 49: char Data_Ret;
+[; ;I2C_Support.c: 50: I2C_Start();
 "50
-[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 0 `i `uc ]
-[; ;I2C_Support.c: 51: I2C_Write(Address);
+[e ( _I2C_Start ..  ]
+[; ;I2C_Support.c: 51: I2C_Write((Device << 1) | 0);
 "51
-[e ( _I2C_Write (1 _Address ]
-[; ;I2C_Support.c: 52: I2C_ReStart();
+[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 0 `i `uc ]
+[; ;I2C_Support.c: 52: I2C_Write(Address);
 "52
-[e ( _I2C_ReStart ..  ]
-[; ;I2C_Support.c: 53: I2C_Write((Device << 1) | 1);
+[e ( _I2C_Write (1 _Address ]
+[; ;I2C_Support.c: 53: I2C_ReStart();
 "53
-[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 1 `i `uc ]
-[; ;I2C_Support.c: 54: second = I2C_Read(1);
+[e ( _I2C_ReStart ..  ]
+[; ;I2C_Support.c: 54: I2C_Write((Device << 1) | 1);
 "54
-[e = _second ( _I2C_Read (1 -> -> 1 `i `uc ]
-[; ;I2C_Support.c: 55: minute = I2C_Read(1);
+[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 1 `i `uc ]
+[; ;I2C_Support.c: 55: second = I2C_Read(1);
 "55
-[e = _minute ( _I2C_Read (1 -> -> 1 `i `uc ]
-[; ;I2C_Support.c: 56: hour = I2C_Read(1);
+[e = _second ( _I2C_Read (1 -> -> 1 `i `uc ]
+[; ;I2C_Support.c: 56: minute = I2C_Read(1);
 "56
-[e = _hour ( _I2C_Read (1 -> -> 1 `i `uc ]
-[; ;I2C_Support.c: 57: dow = I2C_Read(1);
+[e = _minute ( _I2C_Read (1 -> -> 1 `i `uc ]
+[; ;I2C_Support.c: 57: hour = I2C_Read(1);
 "57
-[e = _dow ( _I2C_Read (1 -> -> 1 `i `uc ]
-[; ;I2C_Support.c: 58: day = I2C_Read(1);
+[e = _hour ( _I2C_Read (1 -> -> 1 `i `uc ]
+[; ;I2C_Support.c: 58: dow = I2C_Read(1);
 "58
-[e = _day ( _I2C_Read (1 -> -> 1 `i `uc ]
-[; ;I2C_Support.c: 59: month = I2C_Read(1);
+[e = _dow ( _I2C_Read (1 -> -> 1 `i `uc ]
+[; ;I2C_Support.c: 59: day = I2C_Read(1);
 "59
-[e = _month ( _I2C_Read (1 -> -> 1 `i `uc ]
-[; ;I2C_Support.c: 60: year = I2C_Read(0);
+[e = _day ( _I2C_Read (1 -> -> 1 `i `uc ]
+[; ;I2C_Support.c: 60: month = I2C_Read(1);
 "60
-[e = _year ( _I2C_Read (1 -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 61: I2C_Stop();
+[e = _month ( _I2C_Read (1 -> -> 1 `i `uc ]
+[; ;I2C_Support.c: 61: year = I2C_Read(0);
 "61
-[e ( _I2C_Stop ..  ]
-[; ;I2C_Support.c: 62: }
+[e = _year ( _I2C_Read (1 -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 62: I2C_Stop();
 "62
+[e ( _I2C_Stop ..  ]
+[; ;I2C_Support.c: 63: }
+"63
 [e :UE 394 ]
 }
-"64
-[v _DS3231_Setup_Time `(v ~T0 @X0 1 ef ]
 "65
+[v _DS3231_Setup_Time `(v ~T0 @X0 1 ef ]
+"66
 {
-[; ;I2C_Support.c: 64: void DS3231_Setup_Time()
-[; ;I2C_Support.c: 65: {
+[; ;I2C_Support.c: 65: void DS3231_Setup_Time()
+[; ;I2C_Support.c: 66: {
 [e :U _DS3231_Setup_Time ]
 [f ]
-"66
-[v _Device `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 66: char Device = 0x68;
-[e = _Device -> -> 104 `i `uc ]
 "67
-[v _Address `uc ~T0 @X0 1 a ]
-[; ;I2C_Support.c: 67: char Address = 0x00;
-[e = _Address -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 68: second = 0x00;
+[v _Device `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 67: char Device = 0x68;
+[e = _Device -> -> 104 `i `uc ]
 "68
-[e = _second -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 69: hour = 0x00;
+[v _Address `uc ~T0 @X0 1 a ]
+[; ;I2C_Support.c: 68: char Address = 0x00;
+[e = _Address -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 69: second = 0x00;
 "69
-[e = _hour -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 70: dow = 0x00;
+[e = _second -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 70: hour = 0x00;
 "70
-[e = _dow -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 71: day = 0x00;
+[e = _hour -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 71: dow = 0x00;
 "71
-[e = _day -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 72: month = 0x00;
+[e = _dow -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 72: day = 0x00;
 "72
-[e = _month -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 73: year = 0x00;
+[e = _day -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 73: month = 0x00;
 "73
+[e = _month -> -> 0 `i `uc ]
+[; ;I2C_Support.c: 74: year = 0x00;
+"74
 [e = _year -> -> 0 `i `uc ]
-[; ;I2C_Support.c: 75: I2C_Start();
-"75
-[e ( _I2C_Start ..  ]
-[; ;I2C_Support.c: 76: I2C_Write((Device << 1) | 0);
+[; ;I2C_Support.c: 76: I2C_Start();
 "76
-[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 0 `i `uc ]
-[; ;I2C_Support.c: 77: I2C_Write(Address);
+[e ( _I2C_Start ..  ]
+[; ;I2C_Support.c: 77: I2C_Write((Device << 1) | 0);
 "77
-[e ( _I2C_Write (1 _Address ]
-[; ;I2C_Support.c: 78: I2C_Write(second);
+[e ( _I2C_Write (1 -> | << -> _Device `i -> 1 `i -> 0 `i `uc ]
+[; ;I2C_Support.c: 78: I2C_Write(Address);
 "78
-[e ( _I2C_Write (1 _second ]
-[; ;I2C_Support.c: 79: I2C_Write(hour);
+[e ( _I2C_Write (1 _Address ]
+[; ;I2C_Support.c: 79: I2C_Write(second);
 "79
-[e ( _I2C_Write (1 _hour ]
-[; ;I2C_Support.c: 80: I2C_Write(dow);
+[e ( _I2C_Write (1 _second ]
+[; ;I2C_Support.c: 80: I2C_Write(hour);
 "80
-[e ( _I2C_Write (1 _dow ]
-[; ;I2C_Support.c: 81: I2C_Write(day);
+[e ( _I2C_Write (1 _hour ]
+[; ;I2C_Support.c: 81: I2C_Write(dow);
 "81
-[e ( _I2C_Write (1 _day ]
-[; ;I2C_Support.c: 82: I2C_Write(month);
+[e ( _I2C_Write (1 _dow ]
+[; ;I2C_Support.c: 82: I2C_Write(day);
 "82
-[e ( _I2C_Write (1 _month ]
-[; ;I2C_Support.c: 83: I2C_Write(year);
+[e ( _I2C_Write (1 _day ]
+[; ;I2C_Support.c: 83: I2C_Write(month);
 "83
-[e ( _I2C_Write (1 _year ]
-[; ;I2C_Support.c: 84: I2C_Stop();
+[e ( _I2C_Write (1 _month ]
+[; ;I2C_Support.c: 84: I2C_Write(year);
 "84
-[e ( _I2C_Stop ..  ]
-[; ;I2C_Support.c: 85: }
+[e ( _I2C_Write (1 _year ]
+[; ;I2C_Support.c: 85: I2C_Stop();
 "85
+[e ( _I2C_Stop ..  ]
+[; ;I2C_Support.c: 86: }
+"86
 [e :UE 395 ]
 }

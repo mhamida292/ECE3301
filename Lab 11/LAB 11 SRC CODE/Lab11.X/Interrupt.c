@@ -31,7 +31,7 @@ void force_nec_state0()
     T1CONbits.TMR1ON = 0;
 }
 
-void INT0_ISR() 
+void INT0_isr() 
 {    
     INTCONbits.INT0IF = 0;                  // Clear external interrupt
     if (Nec_state != 0)

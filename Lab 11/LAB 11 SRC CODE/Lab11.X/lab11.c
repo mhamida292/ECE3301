@@ -11,6 +11,12 @@
 #include "Interrupt.h"
 #include "ST7735.h"
 
+#pragma config OSC = INTIO67
+#pragma config WDT = OFF
+#pragma config LVP = OFF
+#pragma config BOREN = OFF
+#pragma config CCP2MX = PORTBE
+
 #define Circle_Size     20              // Size of Circle for Light
 #define Circle_X        60              // Location of Circle
 #define Circle_Y        80              // Location of Circle
@@ -27,7 +33,7 @@
 #define MA               ST7735_MAGENTA
 #define BK               ST7735_BLACK
 
-#define kp               PORTEbits.RE1     
+//#define kp               PORTEbits.RE1     
 
 #define Circle_Size     20              // Size of Circle for Light
 #define Circle_X        60              // Location of Circle
@@ -42,6 +48,7 @@
 #define GR               ST7735_GREEN
 #define MA               ST7735_MAGENTA
 #define BK               ST7735_BLACK
+
 
 unsigned char Nec_state = 0;
 unsigned char i,bit_count;
@@ -100,7 +107,7 @@ void Wait_Half_Second();
 void main() 
 { 
     Do_Init();                                                  // Initialization  
-    //Initialize_Screen(); 
+    Initialize_Screen(); 
     DS3231_Setup_Time(); 
     while (1)							// This is for the DS1621 testing. Comment this section
     {								// out to move on to the next section
@@ -121,10 +128,10 @@ void main()
             Nec_code1 = (char)((Nec_code >> 8));
             INTCONbits.INT0IE = 1;          // Enable external interrupt
             INTCON2bits.INTEDG0 = 0;        // Edge programming for INT0 falling edge
-            
+
             found = 0xff;
-            
-            
+
+
             // add code here to look for code
             for(int i = 0;i < 21;i++)
             {
@@ -134,7 +141,7 @@ void main()
                     break;
                 }
             }
-            
+
             printf ("NEC_Code = %08lx %x ", Nec_code, Nec_code1);
             printf ("Found = %d\r\n", found);
             if (found != 0xff) 
@@ -142,11 +149,11 @@ void main()
                 PORTA = D1[found];
                 PORTD = D2[found];
                 PORTE = D3[found];
-                
+
                 fillCircle(Circle_X, Circle_Y, Circle_Size, color[found]); 
                 drawCircle(Circle_X, Circle_Y, Circle_Size, ST7735_WHITE);  
                 drawtext(Text_X, Text_Y, txt1[found], ST7735_WHITE, ST7735_BLACK,TS_1); 
-                
+
                 KEY_PRESSED = 1;
                 //
                 Activate_Buzzer();
@@ -155,9 +162,14 @@ void main()
                 //
                 Deactivate_Buzzer();
             }
+            
+            if (found == 8)
+            {
+                DS3231_Setup_Time();
+            }
         }
     }
-    
+
 //      while (1)						// This is for the DS3231 testing. Comment this section
 //      {							// out to move on to the next section
 //
@@ -170,12 +182,12 @@ void main()
 //            printf ("%02x:%02x:%02x %02x/%02x/%02x",hour,minute,second,month,day,year);
 //            printf (" Temperature = %d degreesC = %d degreesF\r\n", tempC, tempF);
 //        }
-    
+
 //        if (nec_ok == 1)					// This is for the final section
 //        {
-    
-    
-    
+
+
+
 //        }
 //      }
 }
@@ -186,7 +198,7 @@ void Do_Init()                      // Initialize the ports
     //init_INTERRUPT();
     OSCCON=0x70;                    // Set oscillator to 8 MHz 
     DS1621_Init();                  //Initialize the DS1621 begin process
-    
+
     ADCON1= 0x0F;		    // Fill out values
     TRISA = 0x00;
     TRISB = 0x11;
@@ -246,7 +258,7 @@ void Initialize_Screen()
     LCD_Reset();
     TFT_GreenTab_Initialize();
     fillScreen(ST7735_BLACK);
-  
+
     /* TOP HEADER FIELD */
     txt = buffer;
     strcpy(txt, "ECE3301L Spring 22-S3");  
