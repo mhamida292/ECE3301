@@ -49,7 +49,7 @@
     #define MA               ST7735_MAGENTA
     #define BK               ST7735_BLACK
 
-
+//VARIABLE DECLARATION 
     unsigned char Nec_state = 0;
     unsigned char i,bit_count;
     short nec_ok = 0;
@@ -82,7 +82,8 @@
     #define D2W     0x38
 
     #define D3W     0x07
-    char D1[21] = {D1R, D1R, D1R, D1B, D1B, D1G, D1M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    // BUTTON DECLARATION TO COLOR
+    char D1[21] = {D1R, D1R, D1R, D1B, D1B, D1G, D1M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};  
     char D2[21] = {0, 0, 0, 0, 0, 0,0, D2M, D2M, D2W, D2W, D2W, D2W, D2W, 0, 0, 0, 0, 0, 0, 0};
     char D3[21] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, D3W, D3W, D3W, D3W, D3W, D3W, D3W};
 
@@ -108,25 +109,25 @@
     void main() 
     { 
         Do_Init();                                                  // Initialization  
-        Initialize_Screen(); 
-        DS3231_Setup_Time(); 
+        Initialize_Screen();                                    // INITIALIZATION OF SCREEN
+        DS3231_Setup_Time();                                    //SETUP FOR DS3231 DEVICE   
         while (1)							// This is for the DS1621 testing. Comment this section
         {								// out to move on to the next section
-            char tempC = DS1621_Read_Temp();
-            char tempF = (tempC * 9 / 5) + 32;
-            printf(" Temperature = %d degreesC = %d degreesF\r\n", tempC, tempF);
-            char previousSecond = second; 
-            DS3231_Read_Time();
-            if(second != previousSecond){
-                printf("%02x:%02x:%02x %02x/%02x/%02x",hour,minute,second,month,day,year);   
-                tempC = DS1621_Read_Temp();
-                tempF = (tempC * 9 / 5) + 32;
-                printf (" Temperature = %d degreesC = %d degreesF\r\n", tempC, tempF);
+            char tempC = DS1621_Read_Temp();// read temperature from sensor
+            char tempF = (tempC * 9 / 5) + 32; // convert toF
+            printf(" Temperature = %d degreesC = %d degreesF\r\n", tempC, tempF); // serial print for tera term 
+            char previousSecond = second;  
+            DS3231_Read_Time(); // read time stamp 
+            if(second != previousSecond){ // check if time changed 
+                printf("%02x:%02x:%02x %02x/%02x/%02x",hour,minute,second,month,day,year);    // update time 
+                tempC = DS1621_Read_Temp(); // read temp 
+                tempF = (tempC * 9 / 5) + 32; // change to F 
+                printf (" Temperature = %d degreesC = %d degreesF\r\n", tempC, tempF); // serial print 
             }
-            if(nec_ok == 1)
+            if(nec_ok == 1) // check if button pressed 
             {
-                nec_ok = 0;
-                Nec_code1 = (char)((Nec_code >> 8));
+                nec_ok = 0; // set flag to 0 
+                Nec_code1 = (char)((Nec_code >> 8)); // button code 
                 INTCONbits.INT0IE = 1;          // Enable external interrupt
                 INTCON2bits.INTEDG0 = 0;        // Edge programming for INT0 falling edge
 
@@ -211,34 +212,34 @@
         TXREG = c;
     }
 
-    void init_UART()
+    void init_UART() // initialize UART communication 
     {
         OpenUSART (USART_TX_INT_OFF & USART_RX_INT_OFF & USART_ASYNCH_MODE & USART_EIGHT_BIT & USART_CONT_RX & USART_BRGH_HIGH, 25);
         OSCCON = 0x70;
     }
 
 
-    void Wait_One_Sec()
+    void Wait_One_Sec() // wait one second by waiting half second twice 
     {
         Wait_Half_Second();
         Wait_Half_Second();
     }
 
-    void Activate_Buzzer()
+    void Activate_Buzzer() // activtate buzzer 
     {
         PR2 = 0b11111001;
         T2CON = 0b00000101;
         CCPR2L = 0b01001010;
         CCP2CON = 0b00111100;
     }
-
-    void Deactivate_Buzzer()
+ 
+    void Deactivate_Buzzer() // deactivate buzzer 
     {
         CCP2CON = 0x0;
         PORTBbits.RB3 = 0;
     }
 
-    void Wait_Half_Second()
+    void Wait_Half_Second() // wwait half second by using timer 
     {
         T0CON = 0x03;                               // Timer 0, 16-bit mode, prescaler 1:16
         TMR0L = 0xDB;                               // set the lower byte of TMR
@@ -249,7 +250,7 @@
         T0CONbits.TMR0ON = 0;                       // turn off the Timer 0
     }
 
-    void Initialize_Screen()
+    void Initialize_Screen() // initialize screen function 
     {
         LCD_Reset();
         TFT_GreenTab_Initialize();

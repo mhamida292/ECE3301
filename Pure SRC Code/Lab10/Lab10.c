@@ -16,13 +16,15 @@
 #define _XTAL_FREQ  8000000             // Set operation for 8 Mhz
 
 
-void TIMER1_isr(void);
-void INT0_isr(void);
-void Initialize_Screen();
-void Wait_Half_Sec();
-void Activate_Buzzer();
-void Deactivate_Buzzer();
+void TIMER1_isr(void); // timer service routine 
+void INT0_isr(void);    //interupt service routine 
+void Initialize_Screen(); // initialize screen 
+void Wait_Half_Sec(); // wait half a second 
+void Activate_Buzzer(); // activate buzzer
+void Deactivate_Buzzer(); // deactivate buzzer 
 
+
+// variable decarations 
 unsigned char Nec_state = 0;
 unsigned char i,bit_count;
 short nec_ok = 0;
@@ -76,7 +78,7 @@ void putch (char c)
     while (!TRMT);
     TXREG = c;
 }
-void init_UART()
+void init_UART() // initialize uart 
 {
     OpenUSART (USART_TX_INT_OFF & USART_RX_INT_OFF &
     USART_ASYNCH_MODE & USART_EIGHT_BIT & USART_CONT_RX &
@@ -84,7 +86,7 @@ void init_UART()
     OSCCON = 0x60;
 }
 
-void interrupt high_priority chkisr()
+void interrupt high_priority chkisr() // check both service routines 
 {
     if (PIR1bits.TMR1IF == 1) TIMER1_isr();
     if (INTCONbits.INT0IF == 1) INT0_isr();
@@ -98,7 +100,7 @@ void TIMER1_isr(void)
     PIR1bits.TMR1IF = 0;                    // Clear interrupt flag
 }
 
-void force_nec_state0()
+void force_nec_state0() // force the state of button to be 0 and set timer on to 0 
 {
     Nec_state=0;
     T1CONbits.TMR1ON = 0;
@@ -212,7 +214,7 @@ void Wait_Half_Second()
     T0CONbits.TMR0ON = 0;                       // turn off the Timer 0
 }
 
-void Activate_Buzzer()
+void Activate_Buzzer() // activate buzzer 
 {
     PR2 = 0b11111001;
     T2CON = 0b00000101;
@@ -220,7 +222,7 @@ void Activate_Buzzer()
     CCP2CON = 0b00111100;
 }
 
-void Deactivate_Buzzer()
+void Deactivate_Buzzer() // deactivate buzzer 
 {
     CCP2CON = 0x0;
     PORTBbits.RB3 = 0;
@@ -298,7 +300,7 @@ void main()
 }
 
 
-void Initialize_Screen()
+void Initialize_Screen() // initialize screen 
 {
     LCD_Reset();
     TFT_GreenTab_Initialize();
